@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "streetsidesoftware.code-spell-checker",
+        "onecentlin.laravel-extension-pack",
+        "bmewburn.vscode-intelephense-client",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss"
+    ]
+}

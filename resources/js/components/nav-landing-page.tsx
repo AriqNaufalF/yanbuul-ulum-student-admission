@@ -55,7 +55,7 @@ export function NavLandingPage() {
                         </li>
                         <li>
                             <Button asChild variant="outline">
-                                <Link href="/register">Cek Kelulusan</Link>
+                                <Link href="/login">Cek Kelulusan</Link>
                             </Button>
                         </li>
                     </ul>

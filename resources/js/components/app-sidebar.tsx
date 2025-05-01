@@ -14,12 +14,12 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Berkas',
-        href: '/dashboard/berkas',
+        href: '/berkas',
         icon: FileInput,
     },
     {
         title: 'Pembayaran',
-        href: '/dashboard/pembayaran',
+        href: '/pembayaran',
         icon: CreditCard,
     },
 ];

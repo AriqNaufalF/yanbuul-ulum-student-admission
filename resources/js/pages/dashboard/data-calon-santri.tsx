@@ -182,6 +182,18 @@ export default function DataCalonSantri() {
                             <InputError message={errors.fathersJob} />
                         </FormItem>
                         <FormItem>
+                            <Label htmlFor="parents-phone">No. HP Aktif</Label>
+                            <Input
+                                type="text"
+                                id="parents-phone"
+                                required
+                                autoComplete="phone"
+                                value={data.parentsPhone}
+                                onChange={(e) => setData('parentsPhone', e.target.value)}
+                            />
+                            <InputError message={errors.parentsPhone} />
+                        </FormItem>
+                        <FormItem>
                             <Label htmlFor="mothers-name">Nama Ibu</Label>
                             <Input
                                 type="text"
@@ -202,18 +214,6 @@ export default function DataCalonSantri() {
                                 onChange={(e) => setData('mothersJob', e.target.value)}
                             />
                             <InputError message={errors.mothersJob} />
-                        </FormItem>
-                        <FormItem>
-                            <Label htmlFor="parents-phone">No. HP Aktif</Label>
-                            <Input
-                                type="text"
-                                id="parents-phone"
-                                required
-                                autoComplete="phone"
-                                value={data.parentsPhone}
-                                onChange={(e) => setData('parentsPhone', e.target.value)}
-                            />
-                            <InputError message={errors.parentsPhone} />
                         </FormItem>
                     </div>
                     <div className="mt-4 flex justify-end">

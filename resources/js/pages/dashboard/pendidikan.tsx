@@ -1,11 +1,14 @@
 import InputError from '@/components/input-error';
+import { Button } from '@/components/ui/button';
 import { FormItem, FormTitle } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
+import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -19,7 +22,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
     {
         title: 'Pendidikan',
-        href: '/dashboard/riwayat-pendidikan',
+        href: '/dashboard/pendidikan',
     },
 ];
 
@@ -28,6 +31,7 @@ type RiwayatPendidikanForm = {
     lastLevelEducation: string;
     graduationYear: string;
     schoolAddress: string;
+    program: string;
 };
 
 export default function RiwayatPendidikan() {
@@ -36,6 +40,7 @@ export default function RiwayatPendidikan() {
         lastLevelEducation: '',
         graduationYear: '',
         schoolAddress: '',
+        program: '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -48,9 +53,9 @@ export default function RiwayatPendidikan() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Riwayat Pendidikan" />
             <div className="p-4">
-                <FormTitle>RIWAYAT PENDIDIKAN</FormTitle>
-                <hr />
                 <form onSubmit={submit}>
+                    <FormTitle>RIWAYAT PENDIDIKAN</FormTitle>
+                    <hr />
                     <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
                         <FormItem>
                             <Label htmlFor="school-origin">Nama Sekolah Asal</Label>
@@ -96,6 +101,27 @@ export default function RiwayatPendidikan() {
                             />
                             <InputError message={errors.schoolAddress} />
                         </FormItem>
+                    </div>
+
+                    <FormTitle className="mt-8">PILIH PROGRAM</FormTitle>
+                    <hr />
+                    <div className="mt-4 grid max-w-[calc(1/3*100%-1rem)] gap-4">
+                        <Select onValueChange={(value) => setData('program', value)} defaultValue={data.program}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Pilih Program" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="program1">Program 1</SelectItem>
+                                <SelectItem value="program2">Program 2</SelectItem>
+                                <SelectItem value="program3">Program 3</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="flex justify-end">
+                        <Button type="submit" disabled={processing}>
+                            {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+                            Simpan dan Lanjut ke Unggah Berkas
+                        </Button>
                     </div>
                 </form>
             </div>

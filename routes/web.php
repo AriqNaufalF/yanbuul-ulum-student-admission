@@ -20,12 +20,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard/data-calon-santri');
     })->name('data-calon-santri');
 
-    Route::get('dashboard/data-calon-santri/riwayat-pendidikan', function () {
-        return Inertia::render('dashboard/riwayat-pendidikan');
-    });
-
-    Route::get('dashboard/data-calon-santri/riwayat-pendidikan/pilih-program', function () {
-        return Inertia::render('dashboard/pilih-program');
+    Route::get('dashboard/data-calon-santri/pendidikan', function () {
+        return Inertia::render('dashboard/pendidikan');
     });
 });
 

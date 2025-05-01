@@ -20,6 +20,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard/berkas');
     })->name('berkas');
 
+    Route::get('pembayaran', function () {
+        return Inertia::render('dashboard/pembayaran');
+    })->name('pembayaran');
+
+    Route::get('pembayaran/bayar', function () {
+        return Inertia::render('dashboard/detail-pembayaran');
+    })->name('detail-pembayaran');
+
     Route::get('dashboard/data-calon-santri', function () {
         return Inertia::render('dashboard/data-calon-santri');
     })->name('data-calon-santri');

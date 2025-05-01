@@ -253,7 +253,7 @@ function SidebarTrigger({
   onClick,
   ...props
 }: React.ComponentProps<typeof Button>) {
-  const { toggleSidebar } = useSidebar()
+  const { toggleSidebar, state, isMobile } = useSidebar()
 
   return (
     <Button
@@ -268,8 +268,12 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      <PanelLeftIcon />
-      <span className="sr-only">Toggle Sidebar</span>
+        <div className="space-y-0.5">
+            <span className="h-1 w-6 rounded-full block bg-primary"></span>
+            <span className={"h-1 rounded-full block bg-primary transition-all duration-500 " + (state === 'expanded' || isMobile ? 'w-4': 'w-6')}></span>
+            <span className={"h-1 rounded-full block bg-primary transition-all duration-500 " + (state === 'expanded' || isMobile ? 'w-2': 'w-6')}></span>
+        </div>
+      <span className="sr-only">Toggle Sidebar {state}</span>
     </Button>
   )
 }

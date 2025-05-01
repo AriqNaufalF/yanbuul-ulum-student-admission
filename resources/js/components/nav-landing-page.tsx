@@ -17,10 +17,11 @@ export function NavLandingPage() {
     ];
     return (
         <header ref={headerRef} className="fixed top-0 right-0 left-0 z-50 w-full bg-white px-5 py-4">
-            <div className="container mx-auto flex flex-col justify-between lg:flex-row">
+            <div className="mx-auto flex max-w-7xl flex-col justify-between lg:flex-row">
                 <div className="flex items-center">
-                    <Link href="/" className="text-2xl font-bold uppercase">
-                        yanbu'ul ulum
+                    <Link href="/" className="flex items-center gap-2 text-xl font-bold uppercase xl:text-2xl">
+                        <img src="/images/logo.jpeg" alt="Logo" className="h-10 w-10 rounded-full" />
+                        yanbu'ul ulum Kandis
                     </Link>
                     <Button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="ml-auto lg:hidden">
                         {mobileMenuOpen ? <X /> : <Menu />}
@@ -39,7 +40,7 @@ export function NavLandingPage() {
                         }
                     >
                         {navLinks.map((link) => (
-                            <li key={link.name} className="group relative font-semibold">
+                            <li key={link.name} className="group relative text-center font-semibold">
                                 <Link
                                     href={link.href}
                                     className="after:bg-secondary after:absolute after:-bottom-0.5 after:left-0 after:h-1 after:w-full after:opacity-0 after:transition-opacity after:duration-100 hover:after:opacity-100"

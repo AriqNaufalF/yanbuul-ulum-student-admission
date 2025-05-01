@@ -8,7 +8,7 @@ export default function LandingPageLayout({ children, className }: React.Compone
     return (
         <>
             <NavLandingPage />
-            <div className={cn('mt-16', className)}>{children}</div>
+            <div className={cn('mt-[72px]', className)}>{children}</div>
             <footer className="bg-primary text-white">
                 <div className="container mx-auto grid grid-cols-1 gap-8 px-4 py-10 md:grid-cols-3">
                     {/* Left Section */}

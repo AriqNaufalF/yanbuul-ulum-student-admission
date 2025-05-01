@@ -6,7 +6,7 @@ import LandingPageLayout from '@/layouts/landing-page-layout';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import Autoplay from 'embla-carousel-autoplay';
-import { BookMarked, BookOpenText, CircleChevronRight, Clock, GraduationCap, Mail, MapPin, Medal, Phone } from 'lucide-react';
+import { BookMarked, BookOpen, CircleChevronRight, Clock, GraduationCap, Mail, MapPin, Phone } from 'lucide-react';
 import React from 'react';
 
 export default function Welcome() {
@@ -66,36 +66,43 @@ function AboutSection() {
             <SectionTitle>
                 Tentang <span className="text-primary">Yanbu'ul Ulum</span>
             </SectionTitle>
-            <div className="mt-6 grid grid-cols-1 justify-center gap-6 md:grid-cols-3">
-                <div className="bg-[#F7F2EC] px-6 py-8">
-                    <div className="text-primary mb-4 flex flex-col items-center text-center text-xl font-semibold md:text-2xl">
-                        <BookOpenText size={32} />
-                        <h3>Visi & Misi</h3>
+
+            <div className="mx-auto">
+                {/* Flex container for side-by-side layout */}
+                <div className="relative max-w-7xl">
+                    {/* Bookshelf image that overflows */}
+                    <div className="relative z-0 -mb-24 ml-auto max-h-64 w-full max-w-xl md:mb-0 md:max-h-full xl:max-w-[720px]">
+                        <p className="sr-only">
+                            Photo by{' '}
+                            <a href="https://unsplash.com/@inakihxz?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">
+                                Iñaki del Olmo
+                            </a>{' '}
+                            on{' '}
+                            <a href="https://unsplash.com/photos/assorted-title-of-books-piled-in-the-shelves-NIJuEQw0RKg?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">
+                                Unsplash
+                            </a>
+                        </p>
+                        <img src="/images/bookshelf-bg.jpg" alt="Bookshelf background" className="w-fit object-cover opacity-75" />
                     </div>
-                    <p>
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quibusdam alias suscipit soluta explicabo neque ipsum incidunt
-                        repudiandae nesciunt atque error, vero perspiciatis omnis accusantium aliquam velit ipsa nihil eveniet tenetur.
-                    </p>
-                </div>
-                <div className="bg-[#F7F2EC] px-6 py-8">
-                    <div className="text-primary mb-4 flex flex-col items-center text-center text-xl font-semibold md:text-2xl">
-                        <Medal size={32} />
-                        <h3>Akreditasi</h3>
+
+                    {/* Vision & Mission card */}
+                    <div className="relative z-1 max-w-xl flex-1 p-6 text-white md:absolute md:top-1/2 md:left-0 md:mb-0 md:-translate-y-1/2 md:p-0">
+                        <div className="bg-primary flex flex-col items-center rounded-lg p-6 text-justify shadow-lg md:p-8">
+                            <BookOpen className="h-8 w-8 text-white" />
+                            <h3 className="text-xl font-semibold md:text-2xl">Visi & Misi</h3>
+                            <div className="mt-4 space-y-2">
+                                <p className="text-sm md:text-base">
+                                    Menjadi lembaga pendidikan Islam yang unggul dalam membentuk generasi berakhlak mulia, berwawasan luas, dan
+                                    berprestasi.
+                                </p>
+                                <ul className="mt-2 list-disc pl-5 text-left text-sm md:text-base">
+                                    <li>Menyelenggarakan pendidikan berkualitas berbasis nilai-nilai Islam</li>
+                                    <li>Mengembangkan potensi peserta didik secara komprehensif</li>
+                                    <li>Membangun kerja sama dengan berbagai pihak untuk kemajuan pendidikan</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                    <p>
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quibusdam alias suscipit soluta explicabo neque ipsum incidunt
-                        repudiandae nesciunt atque error, vero perspiciatis omnis accusantium aliquam velit ipsa nihil eveniet tenetur.
-                    </p>
-                </div>
-                <div className="place-items-center bg-[#F7F2EC] px-6 py-8">
-                    <div className="text-primary mb-4 flex flex-col items-center text-center text-xl font-semibold md:text-2xl">
-                        <MapPin size={32} />
-                        <h3>Lokasi</h3>
-                    </div>
-                    <p>
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quibusdam alias suscipit soluta explicabo neque ipsum incidunt
-                        repudiandae nesciunt atque error, vero perspiciatis omnis accusantium aliquam velit ipsa nihil eveniet tenetur.
-                    </p>
                 </div>
             </div>
         </SectionWrapper>

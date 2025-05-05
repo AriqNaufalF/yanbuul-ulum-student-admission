@@ -146,7 +146,7 @@ export default function DetailPembayaran() {
                         </Table>
                     </CardContent>
                 </Card>
-                <Card className="text-primary-foreground h-min bg-[#256A52] lg:max-w-64">
+                <Card className="text-primary-foreground h-min bg-[#256A52]">
                     <CardHeader>
                         <h3>Total Pembayaran</h3>
                         <p>

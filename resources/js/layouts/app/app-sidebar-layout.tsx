@@ -1,4 +1,3 @@
-import { AppContent } from '@/components/app-content';
 import { AppShell } from '@/components/app-shell';
 import { AppSidebar } from '@/components/app-sidebar';
 import { AppSidebarHeader } from '@/components/app-sidebar-header';
@@ -9,10 +8,10 @@ export default function AppSidebarLayout({ children, breadcrumbs = [] }: PropsWi
     return (
         <AppShell variant="sidebar">
             <AppSidebar />
-            <AppContent variant="sidebar">
+            <div className="flex min-h-svh max-w-full flex-1 flex-col bg-gray-50">
                 <AppSidebarHeader breadcrumbs={breadcrumbs} />
-                {children}
-            </AppContent>
+                <div className="p-2">{children}</div>
+            </div>
         </AppShell>
     );
 }

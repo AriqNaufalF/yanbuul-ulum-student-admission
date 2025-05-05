@@ -4,9 +4,9 @@ import { cva, VariantProps } from 'class-variance-authority';
 const chipVariants = cva('rounded-md px-2 py-1.5 text-xs font-medium inline-flex items-center', {
     variants: {
         variant: {
-            success: 'bg-green-100 text-green-900',
-            danger: 'bg-red-100 text-red-900',
-            warning: 'bg-yellow-100 text-yellow-900',
+            success: 'bg-primary text-primary-foreground',
+            danger: 'bg-red-600 text-white',
+            warning: 'bg-amber-600 text-white',
         },
     },
 });

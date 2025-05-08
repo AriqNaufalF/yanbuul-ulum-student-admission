@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -12,12 +13,18 @@ Route::get('/petunjuk-pendaftaran', function () {
 })->name('petunjuk-pendaftaran');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
+    Route::get('dashboard', function (Request $request) {
+        // Check if the user is an admin
+        // Replace this query param isAdmin with actual admin check logic
+        $isAdmin = $request->query('isAdmin', false);
+        if ($isAdmin == 'true') {
+            return Inertia::render('admin-dashboard');
+        }
         return Inertia::render('dashboard');
     })->name('dashboard');
 
     Route::get('berkas', function () {
-        return Inertia::render('dashboard/berkas');
+        return Inertia::render('dashboard/berkas',);
     })->name('berkas');
 
     Route::get('pembayaran', function () {

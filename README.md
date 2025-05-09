@@ -19,7 +19,7 @@ git clone https://github.com/AriqNaufalF/yanbuul-ulum-student-admission.git
 cd yanbuul-ulum-student-admission
 
 # Install require package
-composer install && npm install
+composer install && npm install --legacy-peer-deps
 
 # Copy .env file
 cp .env.example .env

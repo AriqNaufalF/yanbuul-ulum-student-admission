@@ -7,11 +7,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
+import { City, getCities, getProvinces, Province } from '@/lib/wilayah-api';
 import { BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { getYear } from 'date-fns';
 import { LoaderCircle } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useEffect, useMemo, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -46,6 +47,12 @@ interface ParentData {
 }
 
 export default function DataCalonSantri() {
+    const [provinces, setProvinces] = useState<Province[]>([]);
+    const [cities, setCities] = useState<City[]>([]);
+    const [selectedProvince, setSelectedProvince] = useState<string>('');
+    const [loadingProvinces, setLoadingProvinces] = useState<boolean>(false);
+    const [loadingCities, setLoadingCities] = useState<boolean>(false);
+
     const { data, setData, processing, errors } = useForm<Required<ProspectiveStudent & ParentData>>({
         name: '',
         nik: '',
@@ -63,6 +70,60 @@ export default function DataCalonSantri() {
         mothersName: '',
         mothersJob: '',
     });
+
+    // Fetch provinces on component mount
+    useEffect(() => {
+        setLoadingProvinces(true);
+        getProvinces()
+            .then(setProvinces)
+            .catch((error: Error) => {
+                console.error(error.message);
+            })
+            .finally(() => setLoadingProvinces(false));
+    }, []);
+
+    // Fetch cities when a province is selected
+    useEffect(() => {
+        if (selectedProvince !== '') {
+            setLoadingCities(true);
+            getCities(selectedProvince)
+                .then(setCities)
+                .catch((error: Error) => {
+                    console.error(error.message);
+                })
+                .finally(() => setLoadingCities(false));
+
+            setData('province', provinces.find(({ id }) => id === selectedProvince)!.name);
+            setData('city', '');
+        }
+    }, [selectedProvince]);
+
+    const handleProvinceChange = (val: string) => {
+        const selectedCity = cities.find(({ id }) => id === val);
+        if (selectedCity) {
+            setData('city', selectedCity.name);
+        }
+    };
+
+    const provinceOptions = useMemo(
+        () =>
+            provinces.map(({ id, name }) => (
+                <SelectItem key={id} value={id}>
+                    {name}
+                </SelectItem>
+            )),
+        [provinces],
+    );
+
+    const cityOptions = useMemo(
+        () =>
+            cities.map(({ id, name }) => (
+                <SelectItem key={id} value={id}>
+                    {name}
+                </SelectItem>
+            )),
+        [cities],
+    );
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -152,18 +213,38 @@ export default function DataCalonSantri() {
                                 </FormItem>
                                 <FormItem>
                                     <Label htmlFor="province">Provinsi Asal</Label>
-                                    <Input
-                                        type="text"
-                                        id="province"
-                                        required
-                                        value={data.province}
-                                        onChange={(e) => setData('province', e.target.value)}
-                                    />
+                                    <Select onValueChange={setSelectedProvince} defaultValue={data.province}>
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Pilih Provinsi asal" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {loadingProvinces ? (
+                                                <SelectItem value="loading" disabled>
+                                                    <LoaderCircle className="h-2 w-2 animate-spin" /> Memuat
+                                                </SelectItem>
+                                            ) : (
+                                                provinceOptions
+                                            )}
+                                        </SelectContent>
+                                    </Select>
                                     <InputError message={errors.province} />
                                 </FormItem>
                                 <FormItem>
                                     <Label htmlFor="city">Kab/kota Asal</Label>
-                                    <Input type="text" id="city" required value={data.city} onChange={(e) => setData('city', e.target.value)} />
+                                    <Select onValueChange={handleProvinceChange} defaultValue={data.city}>
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Pilih Kab/Kota asal" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {loadingCities ? (
+                                                <SelectItem value="loading" disabled>
+                                                    <LoaderCircle className="h-2 w-2 animate-spin" /> Memuat
+                                                </SelectItem>
+                                            ) : (
+                                                cityOptions
+                                            )}
+                                        </SelectContent>
+                                    </Select>
                                     <InputError message={errors.city} />
                                 </FormItem>
                                 <FormItem>

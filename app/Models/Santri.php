@@ -48,4 +48,9 @@ class Santri extends Model
     {
         return $this->hasOne(Berkas::class);
     }
+
+    public function pembayaran()
+    {
+        return $this->hasOne(Pembayaran::class, 'id_pendaftaran', 'nomor_pendaftaran');
+    }
 }

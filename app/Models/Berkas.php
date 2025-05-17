@@ -18,4 +18,9 @@ class Berkas extends Model
     {
         return $this->belongsTo(Santri::class);
     }
+
+    public function pembayaran()
+    {
+        return $this->hasOne(Pembayaran::class, 'berkas_id', 'id');
+    }
 }

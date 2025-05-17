@@ -28,7 +28,10 @@ class Santri extends Model
         'ibu',
         'pekerjaan_ibu',
         'no_aktif',
-        'email_aktif'
+        'email_aktif',
+        'schoolOrigin',
+        'graduationYear',
+        'program'
     ];
 
     protected $casts = [

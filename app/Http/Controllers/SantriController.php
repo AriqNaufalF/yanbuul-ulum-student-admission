@@ -49,6 +49,8 @@ class SantriController extends Controller
             'mothersJob' => 'required|string|max:255',
             'phone' => 'required|string|max:15',
             'email' => 'required|email|unique:santris,email_aktif',
+            'schoolOrigin' => 'required|string|max:255',
+            'graduationYear' => 'required|string|max:10',
         ]);
 
         // Simpan data ke database
@@ -72,6 +74,8 @@ class SantriController extends Controller
             'tanggal_daftar' => now(),
             'nomor_pendaftaran' => mt_rand(1000000000, 9999999999),
             'status' => 'diproses',
+            'schoolOrigin' => $validated['schoolOrigin'],
+            'graduationYear' => $validated['graduationYear'],
         ]);
 
         return redirect()->back()->with('success', 'Data santri berhasil disimpan');

@@ -9,10 +9,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import AppLayout from '@/layouts/app-layout';
 import { City, getCities, getProvinces, Province } from '@/lib/wilayah-api';
 import { BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import { getYear } from 'date-fns';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -127,8 +128,21 @@ export default function DataCalonSantri() {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        // Handle form submission
-        console.log(data);
+        router.post(
+            '/santri',
+            {
+                ...data,
+                birthDate: data.birthDate.toISOString().split('T')[0],
+            },
+            {
+                onSuccess: () => {
+                    toast.success('Data berhasil disimpan!');
+                },
+                onError: (errors: any) => {
+                    console.error('Gagal menyimpan data:', errors);
+                },
+            },
+        );
     };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -188,7 +202,7 @@ export default function DataCalonSantri() {
                                 </FormItem>
                                 <FormItem>
                                     <Label htmlFor="gender">Jenis Kelamin</Label>
-                                    <Select onValueChange={(val) => setData('gender', val)} defaultValue={data.gender}>
+                                    <Select onValueChange={(val) => setData('gender', val === 'male' ? 'L' : 'P')} defaultValue={data.gender}>
                                         <SelectTrigger className="w-full">
                                             <SelectValue placeholder="Pilih jenis kelamin" />
                                         </SelectTrigger>

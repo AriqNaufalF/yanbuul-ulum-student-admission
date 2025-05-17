@@ -4,6 +4,7 @@ use App\Http\Controllers\WilayahController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use App\Http\Controllers\SantriController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -19,6 +20,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('api/provinces/{provinceId}/cities', 'getCities')->name('cities');
     });
 
+    Route::resource('santri', SantriController::class)->only([
+        'create', 'store', 'show', 'edit', 'update', 'destroy'
+    ]);
+    Route::post('/santri', [SantriController::class, 'store'])->name('santri.store');
     Route::get('dashboard', function (Request $request) {
         // Check if the user is an admin
         // Replace this query param isAdmin with actual admin check logic

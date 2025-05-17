@@ -3,7 +3,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Bolt, CreditCard, FileCheck, FileInput, FileOutput, House, LayoutDashboard, UserRoundPlus } from 'lucide-react';
+import { Bolt, CreditCard, FileCheck, FileInput, FileOutput, House, LayoutDashboard, UserRound, UserRoundPlus } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -11,6 +11,11 @@ const mainNavItems: NavItem[] = [
         title: 'Beranda',
         href: '/dashboard',
         icon: House,
+    },
+    {
+        title: 'Data Diri',
+        href: '/data-calon-santri',
+        icon: UserRound,
     },
     {
         title: 'Berkas',

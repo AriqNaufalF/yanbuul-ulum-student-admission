@@ -20,10 +20,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('api/provinces/{provinceId}/cities', 'getCities')->name('cities');
     });
 
-    Route::resource('santri', SantriController::class)->only([
-        'create', 'store', 'show', 'edit', 'update', 'destroy'
-    ]);
-    Route::post('/santri', [SantriController::class, 'store'])->name('santri.store');
+    Route::controller(SantriController::class)->group(function () {
+        Route::get('/data-calon-santri', 'create')->name('santri.create');
+        Route::post('/data-calon-santri', 'store')->name('santri.store');
+    });
+
     Route::get('dashboard', function (Request $request) {
         // Check if the user is an admin
         // Replace this query param isAdmin with actual admin check logic
@@ -45,14 +46,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('pembayaran/bayar', function () {
         return Inertia::render('dashboard/detail-pembayaran');
     })->name('detail-pembayaran');
-
-    Route::get('dashboard/data-calon-santri', function () {
-        return Inertia::render('dashboard/data-calon-santri');
-    })->name('data-calon-santri');
-
-    Route::get('dashboard/data-calon-santri/pendidikan', function () {
-        return Inertia::render('dashboard/pendidikan');
-    });
 });
 
 require __DIR__ . '/settings.php';

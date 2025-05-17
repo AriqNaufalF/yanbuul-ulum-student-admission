@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Inertia\Inertia;
 use App\Models\Santri;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -23,7 +24,7 @@ class SantriController extends Controller
      */
     public function create()
     {
-        return view('santri.create');
+        return Inertia::render('dashboard/data-calon-santri');
     }
 
     /**
@@ -57,7 +58,7 @@ class SantriController extends Controller
             'nik' => $validated['nik'],
             'tempat_lahir' => $validated['birthPlace'],
             'tanggal_lahir' => $validated['birthDate'],
-            'jenis_kelamin' => $validated['gender'] == 'male' ? 'L' : 'P',
+            'jenis_kelamin' => $validated['gender'],
             'alamat' => $validated['address'],
             'provinsi' => $validated['province'],
             'kabkota' => $validated['city'],

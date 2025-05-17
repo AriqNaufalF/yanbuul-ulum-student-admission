@@ -60,7 +60,7 @@ export default function Dashboard() {
             <Card>
                 <CardContent>
                     <Button className="mb-4" asChild>
-                        <Link href="/dashboard/data-calon-santri">Daftar</Link>
+                        <Link href="/">Daftar</Link>
                     </Button>
                     <hr />
                     <Table className="mt-4 border">

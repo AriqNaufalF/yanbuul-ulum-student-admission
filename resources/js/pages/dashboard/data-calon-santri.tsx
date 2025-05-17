@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import AppLayout from '@/layouts/app-layout';
 import { City, getCities, getProvinces, Province } from '@/lib/wilayah-api';
 import { BreadcrumbItem } from '@/types';
-import { Head, router, useForm } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { getYear } from 'date-fns';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useEffect, useMemo, useState } from 'react';
@@ -17,35 +17,36 @@ import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Beranda',
-        href: '/dashboard',
-    },
-    {
         title: 'Data Calon Santri',
-        href: '/dashboard/data-calon-santri',
+        href: '/data-calon-santri',
     },
 ];
 
-interface ProspectiveStudent {
+type ProspectiveStudent = {
     name: string;
     nik: string;
-    birthDate: Date;
+    birthDate?: Date;
     birthPlace: string;
     gender: string;
     address: string;
     province: string;
     city: string;
     postalCode: string;
-}
+};
 
-interface ParentData {
+type ParentData = {
     phone: string;
     email: string;
     fathersName: string;
     fathersJob: string;
     mothersName: string;
     mothersJob: string;
-}
+};
+
+type RiwayatPendidikan = {
+    schoolOrigin: string;
+    graduationYear: string;
+};
 
 export default function DataCalonSantri() {
     const [provinces, setProvinces] = useState<Province[]>([]);
@@ -54,12 +55,11 @@ export default function DataCalonSantri() {
     const [loadingProvinces, setLoadingProvinces] = useState<boolean>(false);
     const [loadingCities, setLoadingCities] = useState<boolean>(false);
 
-    const { data, setData, processing, errors } = useForm<Required<ProspectiveStudent & ParentData>>({
+    const { data, setData, processing, errors, post } = useForm<ProspectiveStudent & ParentData & RiwayatPendidikan>({
         name: '',
         nik: '',
         gender: '',
         birthPlace: '',
-        birthDate: new Date(),
         address: '',
         province: '',
         city: '',
@@ -70,6 +70,8 @@ export default function DataCalonSantri() {
         fathersJob: '',
         mothersName: '',
         mothersJob: '',
+        schoolOrigin: '',
+        graduationYear: '',
     });
 
     // Fetch provinces on component mount
@@ -128,21 +130,11 @@ export default function DataCalonSantri() {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        router.post(
-            '/santri',
-            {
-                ...data,
-                birthDate: data.birthDate.toISOString().split('T')[0],
+        post('/data-calon-santri', {
+            onSuccess: () => {
+                toast.success('Data berhasil disimpan!');
             },
-            {
-                onSuccess: () => {
-                    toast.success('Data berhasil disimpan!');
-                },
-                onError: (errors: any) => {
-                    console.error('Gagal menyimpan data:', errors);
-                },
-            },
-        );
+        });
     };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -150,6 +142,7 @@ export default function DataCalonSantri() {
             <Card>
                 <CardContent className="@container">
                     <form onSubmit={submit}>
+                        {/* Data Pribadi */}
                         <div className="grid grid-cols-1 gap-6 @3xl:grid-cols-2 @5xl:gap-8">
                             <div>
                                 <FormTitle>DATA PRIBADI</FormTitle>
@@ -202,13 +195,13 @@ export default function DataCalonSantri() {
                                 </FormItem>
                                 <FormItem>
                                     <Label htmlFor="gender">Jenis Kelamin</Label>
-                                    <Select onValueChange={(val) => setData('gender', val === 'male' ? 'L' : 'P')} defaultValue={data.gender}>
+                                    <Select onValueChange={(val) => setData('gender', val)} defaultValue={data.gender}>
                                         <SelectTrigger className="w-full">
                                             <SelectValue placeholder="Pilih jenis kelamin" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="male">Laki-Laki</SelectItem>
-                                            <SelectItem value="female">Perempuan</SelectItem>
+                                            <SelectItem value="L">Laki-Laki</SelectItem>
+                                            <SelectItem value="P">Perempuan</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <InputError message={errors.gender} />
@@ -275,6 +268,51 @@ export default function DataCalonSantri() {
                             </div>
                         </div>
                         <hr className="my-8" />
+
+                        {/* Data riwayat pendidikan */}
+                        <div className="grid grid-cols-1 gap-6 @3xl:grid-cols-2 @5xl:gap-8">
+                            <div>
+                                <FormTitle>RIWAYAT PENDIDIKAN</FormTitle>
+                                <p className="text-muted-foreground">
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis minus iusto, illo quisquam optio hic sint
+                                    expedita facilis, ducimus et ad adipisci dolorem provident, nemo quibusdam fugit quaerat obcaecati consectetur.
+                                </p>
+                            </div>
+                            <div className="space-y-4">
+                                <FormItem>
+                                    <Label htmlFor="school-origin">Nama Sekolah Asal</Label>
+                                    <Input
+                                        id="school-origin"
+                                        type="text"
+                                        required
+                                        value={data.schoolOrigin}
+                                        onChange={(e) => setData('schoolOrigin', e.target.value)}
+                                    />
+                                    <InputError message={errors.schoolOrigin} />
+                                </FormItem>
+                                <FormItem>
+                                    <Label htmlFor="graduation-year">Tahun Lulus</Label>
+                                    <Select onValueChange={(value) => setData('graduationYear', value)} defaultValue={data.graduationYear}>
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Pilih Tahun Lulus" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {Array.from({ length: 30 }, (_, i) => {
+                                                const year = new Date().getFullYear() - i;
+                                                return (
+                                                    <SelectItem key={year} value={String(year)}>
+                                                        {year}
+                                                    </SelectItem>
+                                                );
+                                            })}
+                                        </SelectContent>
+                                    </Select>
+                                    <InputError message={errors.graduationYear} />
+                                </FormItem>
+                            </div>
+                        </div>
+                        <hr className="my-8" />
+                        {/* Data Orang tua */}
                         <div className="grid grid-cols-1 gap-6 @3xl:grid-cols-2 @5xl:gap-8">
                             <div>
                                 <FormTitle>DATA ORANG TUA/WALI</FormTitle>

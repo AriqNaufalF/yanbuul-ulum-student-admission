@@ -27,9 +27,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('dashboard', function (Request $request) {
         // Check if the user is an admin
-        // Replace this query param isAdmin with actual admin check logic
-        $isAdmin = $request->query('isAdmin', false);
-        if ($isAdmin == 'true') {
+        $isAdmin = $request->user()->isAdmin;
+        if ($isAdmin) {
             return Inertia::render('admin-dashboard');
         }
         return Inertia::render('dashboard');
@@ -50,6 +49,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard/daftar-program', function () {
         return Inertia::render('dashboard/daftar-program');
     });
+
+    // Admin Routes
+    Route::get('/manajemen-pendaftar', function () {
+        return Inertia::render('dashboard/admin/manajemen-pendaftar');
+    });
+
+    Route::get('/manajemen-pendaftar/{id}', function ($id) {
+        return Inertia::render('dashboard/admin/detail-pendaftar', [
+            'id' => $id,
+        ]);
+    })->name('detail-pendaftar');
 });
 
 require __DIR__ . '/settings.php';

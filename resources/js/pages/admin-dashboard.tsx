@@ -6,6 +6,7 @@ import { Bar, BarChart, CartesianGrid, Pie, PieChart, XAxis, YAxis } from 'recha
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { BreadcrumbItem } from '@/types';
 
 const barChartData = [
     { month: 'Januari', applicants: 186 },
@@ -46,9 +47,16 @@ const pieChartConfig = {
     },
 } satisfies ChartConfig;
 
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Dashboard',
+        href: '/dashboard',
+    },
+];
+
 export default function AdminDashboard() {
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="@container space-y-8">
                 {/* Quick Info */}

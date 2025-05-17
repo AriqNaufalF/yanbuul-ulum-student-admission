@@ -1,8 +1,8 @@
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
+import { SharedData, type NavItem } from '@/types';
+import { Link, usePage } from '@inertiajs/react';
 import { Bolt, CreditCard, FileCheck, FileInput, FileOutput, House, LayoutDashboard, UserRound, UserRoundPlus } from 'lucide-react';
 import AppLogo from './app-logo';
 
@@ -37,7 +37,7 @@ const adminNavItems: NavItem[] = [
     },
     {
         title: 'Manajemen',
-        href: '/manajemen',
+        href: '/manajemen-pendaftar',
         icon: UserRoundPlus,
     },
     {
@@ -58,8 +58,9 @@ const adminNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
-    const isAdmin = new URLSearchParams(window.location.search).get('isAdmin'); // Replace with actual admin check
-    const navItems = isAdmin === 'true' ? adminNavItems : mainNavItems;
+    const { auth } = usePage<SharedData>().props;
+    const isAdmin = auth.user?.isAdmin;
+    const navItems = isAdmin ? adminNavItems : mainNavItems;
     return (
         <Sidebar collapsible="icon">
             <SidebarHeader>

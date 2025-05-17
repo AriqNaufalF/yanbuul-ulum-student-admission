@@ -43,4 +43,9 @@ class Santri extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function berkas()
+    {
+        return $this->hasOne(Berkas::class);
+    }
 }

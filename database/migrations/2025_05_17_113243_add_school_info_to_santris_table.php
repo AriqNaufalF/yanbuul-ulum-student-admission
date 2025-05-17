@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('santris', function (Blueprint $table) {
             $table->string('schoolOrigin')->after('email_aktif');
             $table->year('graduationYear')->after('schoolOrigin');
-            $table->string('program')->after('graduationYear');
+            $table->string('program')->after('graduationYear')->nullable();
         });
     }
 

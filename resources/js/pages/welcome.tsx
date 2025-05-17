@@ -67,44 +67,26 @@ function AboutSection() {
                 Tentang <span className="text-primary">Yanbu'ul Ulum</span>
             </SectionTitle>
 
-            <div className="mx-auto">
-                {/* Flex container for side-by-side layout */}
-                <div className="relative max-w-7xl">
-                    {/* Bookshelf image that overflows */}
-                    <div className="relative z-0 -mb-24 ml-auto max-h-64 w-full max-w-xl md:mb-0 md:max-h-full xl:max-w-[720px]">
-                        <p className="sr-only">
-                            Photo by{' '}
-                            <a href="https://unsplash.com/@inakihxz?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">
-                                Iñaki del Olmo
-                            </a>{' '}
-                            on{' '}
-                            <a href="https://unsplash.com/photos/assorted-title-of-books-piled-in-the-shelves-NIJuEQw0RKg?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">
-                                Unsplash
-                            </a>
-                        </p>
-                        <img src="/images/bookshelf-bg.jpg" alt="Bookshelf background" className="w-fit object-cover opacity-75" />
-                    </div>
-
-                    {/* Vision & Mission card */}
-                    <div className="relative z-1 max-w-xl flex-1 p-6 text-white md:absolute md:top-1/2 md:left-0 md:mb-0 md:-translate-y-1/2 md:p-0">
-                        <div className="bg-primary flex flex-col items-center rounded-lg p-6 text-justify shadow-lg md:p-8">
-                            <BookOpen className="h-8 w-8 text-white" />
-                            <h3 className="text-xl font-semibold md:text-2xl">Visi & Misi</h3>
-                            <div className="mt-4 space-y-2">
-                                <p className="text-sm md:text-base">
-                                    Menjadi lembaga pendidikan Islam yang unggul dalam membentuk generasi berakhlak mulia, berwawasan luas, dan
-                                    berprestasi.
-                                </p>
-                                <ul className="mt-2 list-disc pl-5 text-left text-sm md:text-base">
-                                    <li>Menyelenggarakan pendidikan berkualitas berbasis nilai-nilai Islam</li>
-                                    <li>Mengembangkan potensi peserta didik secara komprehensif</li>
-                                    <li>Membangun kerja sama dengan berbagai pihak untuk kemajuan pendidikan</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <Card>
+                <CardHeader className="text-primary flex-row items-center justify-center gap-2">
+                    <BookOpen size={24} />
+                    <h3 className="text-xl font-semibold md:text-2xl">Visi dan Misi</h3>
+                </CardHeader>
+                <CardContent>
+                    <ol className="list-decimal space-y-3 pl-6">
+                        <li>Mewujudkan pembelajaran dan pembiasaan dalam mempelajari Al-Quran dan menjalankan ajaran agama Islam</li>
+                        <li>Mewujudkan pembentukan karakter yang mampu mengaktualisasikan diri di masyarakat</li>
+                        <li>Menyelenggarakan pendidikan yang berkualitas dalam pencapaian prestasi akademik</li>
+                        <li>Meningkatkan pengetahuan dan profesionalisme tenaga kependidikan sesuai dengan perkembangan dunia pendidikan</li>
+                        <li>Menjadi madrasah yang berkualitas dan kuantitas terbaik di Kabupaten Siak</li>
+                        <li>Menyelenggarakan tata kelola madrasah yang efektif, efisien, transparan dan akuntabel</li>
+                        <li>Membentuk santri yang cakap, cerdas, beriman dan bertaqwa</li>
+                        <li>Mampu menjadi hafidz/hafidzah yang berkepribadian baik</li>
+                        <li>Mampu menguasai kitab kuning, kitab gundul dan ilmu tafsir Al-Qur'an</li>
+                        <li>Membentuk alumnus yang handal dan memiliki talenta</li>
+                    </ol>
+                </CardContent>
+            </Card>
         </SectionWrapper>
     );
 }
@@ -167,14 +149,14 @@ function RequirementsSection() {
     return (
         <section
             id="kebutuhan-pendaftaran"
-            className="container mx-auto flex min-h-96 items-center bg-white/40 bg-[url(https://plus.unsplash.com/premium_photo-1661331705504-7a513e8b3266?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)] bg-cover bg-center bg-no-repeat px-8 py-8 bg-blend-soft-light md:px-16"
+            className="bg-primary/80 container mx-auto flex min-h-96 items-center bg-[url(/images/santri-belajar.jpg)] bg-cover bg-center bg-no-repeat px-8 py-8 bg-blend-soft-light md:px-16"
         >
             <div className="max-w-md">
-                <h2 className="text-primary text-2xl font-bold underline underline-offset-4 md:text-3xl">Road to Yanbu'ul Ulum</h2>
-                <p className="text-primary mt-2 font-bold">
+                <h2 className="text-2xl font-bold text-white md:text-3xl">Ayo bergabung dengan Yanbu'ul Ulum</h2>
+                <p className="mt-2 font-bold text-white">
                     <q>Barang siapa yang menempuh jalan untuk mencari ilmu, maka Allah akan mudahkan baginya jalan menuju surga.</q> (H.R. Muslim)
                 </p>
-                <Button className="mt-6" asChild>
+                <Button className="mt-6" variant="secondary" asChild>
                     <Link href="/petunjuk-pendaftaran">
                         Selengkapnya <CircleChevronRight />
                     </Link>
@@ -185,6 +167,19 @@ function RequirementsSection() {
 }
 
 function AchievementSection() {
+    const achievements = [
+        'Juara 1 Fahmil Quran Tingkat Kecamatan 2024',
+        'Juara 1 Hifzil Quran 1 Juz Tingkat Kecamatan 2024',
+        'Juara 1 Hifzil Quran 1 Juz Tingkat Desa 2024',
+        'Juara 1 Syarhil Quran Tingkat Kecamatan 2024',
+        'Juara 3 Pidato Bahasa Indonesia Tingkat Provinsi 2024',
+        'Juara 2 Tahfiz 5 Juz Tingkat Provinsi 2024',
+        'Juara 1 Tilawah Anak-Anak dan Remaja Tingkat Desa 2024',
+        'Juara 3 MHQ Tingkat SUMBAGTENG 2024',
+        'Juara 3 Umum Perkemahan Akbar Kwaran Sabak Auh 2024',
+        'Emiya Caroninta Br. Ginting Menjadi Finalis Forkab Tapak Suci Tingkat Kabupaten 2024',
+    ];
+
     return (
         <SectionWrapper id="prestasi">
             <SectionTitle>Prestasi Santri</SectionTitle>
@@ -198,7 +193,7 @@ function AchievementSection() {
                 opts={{ loop: true }}
             >
                 <CarouselContent>
-                    {Array.from({ length: 6 }).map((_, index) => (
+                    {achievements.map((achievement, index) => (
                         <CarouselItem className="md:basis-1/2 lg:basis-1/3 2xl:basis-1/4" key={index}>
                             <Card className="overflow-hidden p-0">
                                 <CardHeader className="p-0">
@@ -208,7 +203,7 @@ function AchievementSection() {
                                     />
                                 </CardHeader>
                                 <CardContent className="px-4 pb-6">
-                                    <h3 className="font-semibold">Juara 1 lomba Adzan</h3>
+                                    <h3 className="font-semibold">{achievement}</h3>
                                 </CardContent>
                             </Card>
                         </CarouselItem>

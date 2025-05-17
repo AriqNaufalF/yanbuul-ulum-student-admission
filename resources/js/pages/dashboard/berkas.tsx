@@ -22,8 +22,6 @@ interface FileUploadForm {
     aktaLahir: File | null;
     ijazah: File | null;
     fotoFormal: File | null;
-    ktp: File | null;
-    suratPernyataan: File | null;
 }
 export default function Berkas() {
     const { data, setData, processing, errors } = useForm<Required<FileUploadForm>>();
@@ -95,30 +93,6 @@ export default function Berkas() {
                                         onChange={(e) => setData('fotoFormal', e.target.files?.[0] || null)}
                                     />
                                     <InputError message={errors.fotoFormal} />
-                                </FormItem>
-                                <FormItem>
-                                    <Label htmlFor="ktp">Scan/Foto KTP Orang Tua (PDF/JPG)</Label>
-                                    <Input
-                                        id="ktp"
-                                        type="file"
-                                        required
-                                        multiple={false}
-                                        accept="application/pdf, image/jpeg"
-                                        onChange={(e) => setData('ktp', e.target.files?.[0] || null)}
-                                    />
-                                    <InputError message={errors.ktp} />
-                                </FormItem>
-                                <FormItem>
-                                    <Label htmlFor="surat-pernyataan">Surat Pernyataan (PDF)</Label>
-                                    <Input
-                                        id="surat-pernyataan"
-                                        type="file"
-                                        required
-                                        multiple={false}
-                                        accept="application/pdf"
-                                        onChange={(e) => setData('suratPernyataan', e.target.files?.[0] || null)}
-                                    />
-                                    <InputError message={errors.suratPernyataan} />
                                 </FormItem>
                             </div>
                         </div>

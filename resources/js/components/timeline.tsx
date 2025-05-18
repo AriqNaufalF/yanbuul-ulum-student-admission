@@ -34,7 +34,7 @@ export function Timeline({ className, children, lineOffset = 40 }: React.Compone
     return (
         <div
             className={cn(
-                'before:bg-secondary relative space-y-8 before:absolute before:top-6 before:bottom-[var(--timeline-bottom)] before:left-1.5 before:-z-1 before:w-1',
+                'before:bg-secondary/50 relative space-y-8 before:absolute before:top-6 before:bottom-[var(--timeline-bottom)] before:left-1.5 before:-z-1 before:w-1',
                 className,
             )}
             style={
@@ -58,7 +58,7 @@ export function TimelineItem({ className, children, ...props }: React.ComponentP
 }
 
 export function TimelinePoint({ className, ...props }: React.ComponentProps<'div'>) {
-    return <div className={cn('mt-6 h-4 w-4 rounded-full bg-slate-900', className)} {...props}></div>;
+    return <div className={cn('bg-secondary mt-6 h-4 w-4 rounded-full', className)} {...props}></div>;
 }
 
 export function TimelineContent({ className, children, ...props }: React.ComponentProps<'div'>) {

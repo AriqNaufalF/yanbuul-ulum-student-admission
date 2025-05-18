@@ -1,12 +1,12 @@
 import { Timeline, TimelineContent, TimelineItem, TimelinePoint } from '@/components/timeline';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import LandingPageLayout from '@/layouts/landing-page-layout';
 import { type SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import Autoplay from 'embla-carousel-autoplay';
-import { BookMarked, BookOpen, CircleChevronRight, Clock, GraduationCap, Mail, MapPin, Phone } from 'lucide-react';
+import { BookMarked, CircleChevronRight, Clock, GraduationCap, Mail, MapPin, Phone } from 'lucide-react';
 import React from 'react';
 
 export default function Welcome() {
@@ -67,30 +67,38 @@ function AboutSection() {
                 Tentang <span className="text-primary">Yanbu'ul Ulum</span>
             </SectionTitle>
 
-            <Card>
-                <CardHeader className="text-primary flex-row items-center justify-center gap-2">
-                    <BookOpen size={24} />
-                    <h3 className="text-xl font-semibold md:text-2xl">Visi dan Misi</h3>
-                </CardHeader>
-                <CardContent>
-                    <ol className="list grid list-inside list-decimal md:grid-cols-2 md:gap-4">
-                        <div className="space-y-2">
+            <div className="grid gap-6 md:grid-cols-2">
+                <Card>
+                    <CardHeader className="text-primary flex-row items-center gap-2">
+                        <CardTitle className="text-2xl">Visi</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <p>
+                            Terbentuknya generasi muslim yang beraqidah Ahlus Sunnah Wal Jama'ah berkepribadian islami dan mumpuni dalam ilmu dan
+                            teknologi.
+                        </p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="text-primary flex-row items-center gap-2">
+                        <CardTitle className="text-2xl">Misi</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <ol className="list-inside list-decimal space-y-2">
                             <li>Mewujudkan pembelajaran dan pembiasaan dalam mempelajari Al-Quran dan menjalankan ajaran agama Islam</li>
                             <li>Mewujudkan pembentukan karakter yang mampu mengaktualisasikan diri di masyarakat</li>
                             <li>Menyelenggarakan pendidikan yang berkualitas dalam pencapaian prestasi akademik</li>
                             <li>Meningkatkan pengetahuan dan profesionalisme tenaga kependidikan sesuai dengan perkembangan dunia pendidikan</li>
                             <li>Menjadi madrasah yang berkualitas dan kuantitas terbaik di Kabupaten Siak</li>
-                        </div>
-                        <div className="space-y-2">
                             <li>Menyelenggarakan tata kelola madrasah yang efektif, efisien, transparan dan akuntabel</li>
                             <li>Membentuk santri yang cakap, cerdas, beriman dan bertaqwa</li>
                             <li>Mampu menjadi hafidz/hafidzah yang berkepribadian baik</li>
                             <li>Mampu menguasai kitab kuning, kitab gundul dan ilmu tafsir Al-Qur'an</li>
                             <li>Membentuk alumnus yang handal dan memiliki talenta</li>
-                        </div>
-                    </ol>
-                </CardContent>
-            </Card>
+                        </ol>
+                    </CardContent>
+                </Card>
+            </div>
         </SectionWrapper>
     );
 }
@@ -101,24 +109,42 @@ function EducationSystemSection() {
             <SectionTitle>Sistem Pendidikan</SectionTitle>
             <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div className="bg-[#F7F2EC]">
-                    <div className="text-primary-foreground bg-primary mb-4 flex items-center justify-center gap-2 px-4 py-6 text-center text-xl font-semibold md:text-2xl">
+                    <div className="text-primary-foreground bg-primary flex items-center justify-center gap-2 px-4 py-6 text-center text-xl font-semibold md:text-2xl">
                         <GraduationCap size={32} />
-                        <h3>Pendidikan Formal</h3>
+                        <h3>Jenjang Pendidikan</h3>
                     </div>
-                    <p className="px-6 py-8">
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quibusdam alias suscipit soluta explicabo neque ipsum incidunt
-                        repudiandae nesciunt atque error, vero perspiciatis omnis accusantium aliquam velit ipsa nihil eveniet tenetur.
-                    </p>
+                    <ul className="list-inside list-disc px-6 py-4">
+                        <li>Madrasah Tsanawiyah (MTs)</li>
+                        <li>Madrasah Aliyah (MA)</li>
+                        <li>Madrasah Aliyah Lanjutan (MA lanjutan)</li>
+                    </ul>
                 </div>
                 <div className="bg-[#F7F2EC]">
-                    <div className="text-primary-foreground bg-primary mb-4 flex items-center justify-center gap-2 px-4 py-6 text-center text-xl font-semibold md:text-2xl">
+                    <div className="text-primary-foreground bg-primary flex items-center justify-center gap-2 px-4 py-6 text-center text-xl font-semibold md:text-2xl">
                         <BookMarked size={32} />
-                        <h3>Pendidikan Non-Formal</h3>
+                        <h3>Kegiatan Pendidikan</h3>
                     </div>
-                    <p className="px-6 py-8">
-                        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quibusdam alias suscipit soluta explicabo neque ipsum incidunt
-                        repudiandae nesciunt atque error, vero perspiciatis omnis accusantium aliquam velit ipsa nihil eveniet tenetur.
-                    </p>
+                    <div className="px-6 py-4">
+                        <h4 className="font-semibold">Program Unggulan</h4>
+                        <ul className="list-inside list-disc">
+                            <li>Program Tahfiz</li>
+                            <li>Program Kitab Kuning</li>
+                            <li>Program Bahasa</li>
+                            <li>Ahklak</li>
+                        </ul>
+                        <h4 className="mt-4 font-semibold">Ekstrakurikuler</h4>
+                        <ul className="list-inside list-disc">
+                            <li>Klub Sains</li>
+                            <li>Pramuka</li>
+                            <li>Pramuka</li>
+                            <li>Tilawah</li>
+                            <li>Klub Fahmil Quran</li>
+                            <li>Klub Syahril Quran</li>
+                            <li>Olahraga (Futsal, Volly, dll)</li>
+                            <li>Hadroh</li>
+                            <li>Tapak Suci</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </SectionWrapper>
@@ -126,21 +152,17 @@ function EducationSystemSection() {
 }
 
 function RegistrationPeriodSection() {
-    const months = ['Januari', 'Februari', 'Maret', 'April'];
+    const phases = ['Oktober - Desember 2024', 'Januari - Maret 2025', 'Mei - Juni 2025'];
     return (
         <SectionWrapper id="periode-pendaftaran">
             <SectionTitle>Periode Pendaftaran</SectionTitle>
             <Timeline>
-                {months.map((month, index) => (
+                {phases.map((phase, index) => (
                     <TimelineItem key={index}>
                         <TimelinePoint />
                         <TimelineContent>
-                            <h3 className="text-lg font-semibold">{month}</h3>
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum impedit corrupti provident cumque quibusdam eos
-                                reprehenderit, iure rerum nostrum dignissimos hic harum! Reprehenderit amet officiis sequi aliquam optio aspernatur
-                                obcaecati?
-                            </p>
+                            <h3 className="text-lg font-semibold">Gelombang {index + 1}</h3>
+                            <p>{phase}</p>
                         </TimelineContent>
                     </TimelineItem>
                 ))}

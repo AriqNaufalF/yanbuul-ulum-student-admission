@@ -73,17 +73,21 @@ function AboutSection() {
                     <h3 className="text-xl font-semibold md:text-2xl">Visi dan Misi</h3>
                 </CardHeader>
                 <CardContent>
-                    <ol className="list-decimal space-y-3 pl-6">
-                        <li>Mewujudkan pembelajaran dan pembiasaan dalam mempelajari Al-Quran dan menjalankan ajaran agama Islam</li>
-                        <li>Mewujudkan pembentukan karakter yang mampu mengaktualisasikan diri di masyarakat</li>
-                        <li>Menyelenggarakan pendidikan yang berkualitas dalam pencapaian prestasi akademik</li>
-                        <li>Meningkatkan pengetahuan dan profesionalisme tenaga kependidikan sesuai dengan perkembangan dunia pendidikan</li>
-                        <li>Menjadi madrasah yang berkualitas dan kuantitas terbaik di Kabupaten Siak</li>
-                        <li>Menyelenggarakan tata kelola madrasah yang efektif, efisien, transparan dan akuntabel</li>
-                        <li>Membentuk santri yang cakap, cerdas, beriman dan bertaqwa</li>
-                        <li>Mampu menjadi hafidz/hafidzah yang berkepribadian baik</li>
-                        <li>Mampu menguasai kitab kuning, kitab gundul dan ilmu tafsir Al-Qur'an</li>
-                        <li>Membentuk alumnus yang handal dan memiliki talenta</li>
+                    <ol className="list grid list-inside list-decimal md:grid-cols-2 md:gap-4">
+                        <div className="space-y-2">
+                            <li>Mewujudkan pembelajaran dan pembiasaan dalam mempelajari Al-Quran dan menjalankan ajaran agama Islam</li>
+                            <li>Mewujudkan pembentukan karakter yang mampu mengaktualisasikan diri di masyarakat</li>
+                            <li>Menyelenggarakan pendidikan yang berkualitas dalam pencapaian prestasi akademik</li>
+                            <li>Meningkatkan pengetahuan dan profesionalisme tenaga kependidikan sesuai dengan perkembangan dunia pendidikan</li>
+                            <li>Menjadi madrasah yang berkualitas dan kuantitas terbaik di Kabupaten Siak</li>
+                        </div>
+                        <div className="space-y-2">
+                            <li>Menyelenggarakan tata kelola madrasah yang efektif, efisien, transparan dan akuntabel</li>
+                            <li>Membentuk santri yang cakap, cerdas, beriman dan bertaqwa</li>
+                            <li>Mampu menjadi hafidz/hafidzah yang berkepribadian baik</li>
+                            <li>Mampu menguasai kitab kuning, kitab gundul dan ilmu tafsir Al-Qur'an</li>
+                            <li>Membentuk alumnus yang handal dan memiliki talenta</li>
+                        </div>
                     </ol>
                 </CardContent>
             </Card>

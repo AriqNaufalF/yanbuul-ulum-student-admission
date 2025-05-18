@@ -147,8 +147,8 @@ export default function DataCalonSantri() {
                             <div>
                                 <FormTitle>DATA PRIBADI</FormTitle>
                                 <p className="text-muted-foreground">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus aperiam laboriosam quia. Ea inventore totam
-                                    voluptas voluptatem ad facere quibusdam in sit aut tempora et saepe adipisci, magnam laborum. Dolorum.
+                                    Silakan isi data diri calon santri dengan lengkap dan benar. Pastikan semua data yang diisi sesuai dengan dokumen
+                                    resmi.
                                 </p>
                             </div>
                             <div className="space-y-4">
@@ -273,10 +273,7 @@ export default function DataCalonSantri() {
                         <div className="grid grid-cols-1 gap-6 @3xl:grid-cols-2 @5xl:gap-8">
                             <div>
                                 <FormTitle>RIWAYAT PENDIDIKAN</FormTitle>
-                                <p className="text-muted-foreground">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis minus iusto, illo quisquam optio hic sint
-                                    expedita facilis, ducimus et ad adipisci dolorem provident, nemo quibusdam fugit quaerat obcaecati consectetur.
-                                </p>
+                                <p className="text-muted-foreground">Silakan isi data riwayat pendidikan terakhir calon santri.</p>
                             </div>
                             <div className="space-y-4">
                                 <FormItem>
@@ -317,8 +314,7 @@ export default function DataCalonSantri() {
                             <div>
                                 <FormTitle>DATA ORANG TUA/WALI</FormTitle>
                                 <p className="text-muted-foreground">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus aperiam laboriosam quia. Ea inventore totam
-                                    voluptas voluptatem ad facere quibusdam in sit aut tempora et saepe adipisci, magnam laborum. Dolorum.
+                                    Silakan isi data orang tua/wali calon santri. Pastikan semua data yang diisi sesuai dengan dokumen resmi.
                                 </p>
                             </div>
                             <div className="space-y-4">

@@ -41,8 +41,8 @@ export default function Berkas() {
                             <div>
                                 <FormTitle>PEMBERKASAN</FormTitle>
                                 <p className="text-muted-foreground">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis minus iusto, illo quisquam optio hic sint
-                                    expedita facilis, ducimus et ad adipisci dolorem provident, nemo quibusdam fugit quaerat obcaecati consectetur.
+                                    Silakan unggah berkas-berkas yang diperlukan untuk pendaftaran. Pastikan semua berkas yang diunggah dalam format
+                                    PDF atau JPG dan tidak lebih dari 2MB per file.
                                 </p>
                             </div>
                             <div className="space-y-4">

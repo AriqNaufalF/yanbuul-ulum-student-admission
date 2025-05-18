@@ -3,7 +3,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { SharedData, type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { CreditCard, FileInput, FileOutput, House, LayoutDashboard, UserRound, UserRoundPlus } from 'lucide-react';
+import { CreditCard, FileInput, FileOutput, House, LayoutDashboard, School, UserRound, UserRoundPlus } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -21,6 +21,11 @@ const mainNavItems: NavItem[] = [
         title: 'Berkas',
         href: '/berkas',
         icon: FileInput,
+    },
+    {
+        title: 'Daftar',
+        href: '/daftar',
+        icon: School,
     },
     {
         title: 'Pembayaran',

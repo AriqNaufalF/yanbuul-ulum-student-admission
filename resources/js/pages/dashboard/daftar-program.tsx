@@ -13,12 +13,8 @@ import { FormEventHandler } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Beranda',
-        href: '/dashboard',
-    },
-    {
         title: 'Daftar Program',
-        href: '/dashboard/daftar-program',
+        href: '/daftar',
     },
 ];
 
@@ -102,7 +98,7 @@ export default function DaftarProgram() {
                         <div className="mt-4 flex justify-end">
                             <Button type="submit" disabled={processing}>
                                 {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
-                                Simpan
+                                Daftar
                             </Button>
                         </div>
                     </form>

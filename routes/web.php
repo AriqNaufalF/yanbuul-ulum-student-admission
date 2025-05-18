@@ -46,7 +46,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('dashboard/detail-pembayaran');
     })->name('detail-pembayaran');
 
-    Route::get('/dashboard/daftar-program', function () {
+    Route::get('/daftar', function () {
         return Inertia::render('dashboard/daftar-program');
     });
 

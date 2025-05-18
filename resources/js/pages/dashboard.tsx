@@ -5,7 +5,7 @@ import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogT
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { Eye } from 'lucide-react';
 
@@ -59,10 +59,6 @@ export default function Dashboard() {
             <Head title="Dashboard" />
             <Card>
                 <CardContent>
-                    <Button className="mb-4" asChild>
-                        <Link href="/dashboard/daftar-program">Daftar</Link>
-                    </Button>
-                    <hr />
                     <Table className="mt-4 border">
                         <TableHeader className="bg-slate-100">
                             <TableRow>

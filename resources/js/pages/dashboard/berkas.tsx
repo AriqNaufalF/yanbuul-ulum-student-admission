@@ -5,8 +5,8 @@ import { FormItem, FormTitle } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { BreadcrumbItem, SharedData } from '@/types';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -18,13 +18,21 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface FileUploadForm {
+    userId: number;
     kartuKeluarga: File | null;
     aktaLahir: File | null;
     ijazah: File | null;
     fotoFormal: File | null;
 }
 export default function Berkas() {
-    const { data, setData, processing, errors } = useForm<Required<FileUploadForm>>();
+    const { auth } = usePage<SharedData>().props;
+    const { data, setData, processing, errors } = useForm<Required<FileUploadForm>>({
+        userId: auth.user.id,
+        kartuKeluarga: null,
+        aktaLahir: null,
+        ijazah: null,
+        fotoFormal: null,
+    });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -89,7 +97,7 @@ export default function Berkas() {
                                         type="file"
                                         required
                                         multiple={false}
-                                        accept="application/pdf, image/jpeg"
+                                        accept="image/jpeg, image/png"
                                         onChange={(e) => setData('fotoFormal', e.target.files?.[0] || null)}
                                     />
                                     <InputError message={errors.fotoFormal} />

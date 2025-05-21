@@ -8,8 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { City, getCities, getProvinces, Province } from '@/lib/wilayah-api';
-import { BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { BreadcrumbItem, SharedData } from '@/types';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { getYear } from 'date-fns';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useEffect, useMemo, useState } from 'react';
@@ -23,6 +23,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 type ProspectiveStudent = {
+    userId: number;
     name: string;
     nik: string;
     birthDate?: Date;
@@ -49,6 +50,7 @@ type RiwayatPendidikan = {
 };
 
 export default function DataCalonSantri() {
+    const { auth } = usePage<SharedData>().props;
     const [provinces, setProvinces] = useState<Province[]>([]);
     const [cities, setCities] = useState<City[]>([]);
     const [selectedProvince, setSelectedProvince] = useState<string>('');
@@ -56,6 +58,7 @@ export default function DataCalonSantri() {
     const [loadingCities, setLoadingCities] = useState<boolean>(false);
 
     const { data, setData, processing, errors, post } = useForm<ProspectiveStudent & ParentData & RiwayatPendidikan>({
+        userId: auth.user.id,
         name: '',
         nik: '',
         gender: '',

@@ -11,6 +11,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { Eye, MessageSquareWarning } from 'lucide-react';
+import { toast } from 'sonner';
 
 type AcceptanceStatus = 'diterima' | 'diproses' | 'ditolak';
 interface RegistrationData {
@@ -30,6 +31,10 @@ interface RegistrationData {
     motherName: string;
     parentPhone: string;
     parentEmail: string;
+    kk: string;
+    akta: string;
+    certificate: string;
+    photo: string;
 }
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -56,7 +61,21 @@ export default function Dashboard() {
         motherName: 'Ibu Doe',
         parentPhone: '08123456789',
         parentEmail: '@example.com',
+        kk: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+        akta: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+        certificate: '',
+        photo: 'https://ylpapp.isb.edu/user/Passport_photo_samples/Sample-1---right.jpg',
     } as RegistrationData;
+
+    const handleDocClick = (url: string) => {
+        if (!url || url === '') {
+            toast.error('Dokumen tidak tersedia!');
+            return;
+        }
+        window.open(url, '_blank');
+        return;
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -166,10 +185,22 @@ export default function Dashboard() {
                                                         </TabsContent>
                                                         <TabsContent value="document">
                                                             <div className="space-y-2">
-                                                                <DocumentItem label="Scan/Foto Kartu Keluarga" />
-                                                                <DocumentItem label="Scan/Foto Akta Kelahiran" />
-                                                                <DocumentItem label="Scan/Foto Ijazah/SKL" />
-                                                                <DocumentItem label="Scan/Foto Foto Formal" />
+                                                                <DocumentItem
+                                                                    label="Scan/Foto Kartu Keluarga"
+                                                                    onClick={() => handleDocClick(registrationData.kk)}
+                                                                />
+                                                                <DocumentItem
+                                                                    label="Scan/Foto Akta Kelahiran"
+                                                                    onClick={() => handleDocClick(registrationData.akta)}
+                                                                />
+                                                                <DocumentItem
+                                                                    label="Scan/Foto Ijazah/SKL"
+                                                                    onClick={() => handleDocClick(registrationData.certificate)}
+                                                                />
+                                                                <DocumentItem
+                                                                    label="Scan/Foto Foto Formal"
+                                                                    onClick={() => handleDocClick(registrationData.photo)}
+                                                                />
                                                             </div>
                                                         </TabsContent>
                                                     </Tabs>

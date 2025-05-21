@@ -6,8 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { BreadcrumbItem, SharedData } from '@/types';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
@@ -28,7 +28,9 @@ const paymentMethods = [
 ];
 
 export default function DaftarProgram() {
+    const { auth } = usePage<SharedData>().props;
     const { data, setData, post, processing, errors } = useForm({
+        userId: auth.user.id,
         program: '',
         method: '',
     });

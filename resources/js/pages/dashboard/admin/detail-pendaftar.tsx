@@ -8,8 +8,8 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { BreadcrumbItem, SharedData } from '@/types';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { AlertCircle, CheckCircle, Clock } from 'lucide-react';
 
@@ -66,6 +66,7 @@ const userData: UserData = {
 };
 
 export default function DetailPendaftar({ id }: { id: string }) {
+    const { auth } = usePage<SharedData>().props;
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Manajemen Pendaftar',
@@ -79,6 +80,8 @@ export default function DetailPendaftar({ id }: { id: string }) {
 
     const { data, setData, processing, errors } = useForm({
         id: userData.id,
+        adminId: auth.user.id,
+        status: '',
         comment: '',
     });
 

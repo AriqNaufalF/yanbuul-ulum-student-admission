@@ -1,13 +1,16 @@
 import { Chip } from '@/components/chip';
+import DocumentItem from '@/components/Document-item';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { format } from 'date-fns';
-import { Eye } from 'lucide-react';
+import { Eye, MessageSquareWarning } from 'lucide-react';
 
 type AcceptanceStatus = 'diterima' | 'diproses' | 'ditolak';
 interface RegistrationData {
@@ -87,66 +90,89 @@ export default function Dashboard() {
                                                         <span className="sr-only">Detail</span>
                                                     </Button>
                                                 </DialogTrigger>
-                                                <DialogContent>
+                                                <DialogContent className="max-h-screen overflow-y-scroll xl:overflow-hidden">
                                                     <DialogHeader className="border-b pb-2">
-                                                        <DialogTitle className="text-xl md:text-2xl">Riwayat Pendaftaran</DialogTitle>
+                                                        <DialogTitle className="text-xl md:text-2xl">Data Registrasi</DialogTitle>
                                                     </DialogHeader>
-                                                    <div className="">
-                                                        <div className="space-y-2">
-                                                            <h3 className="text-lg font-medium md:text-xl">DATA PRIBADI</h3>
-                                                            <p className="grid grid-cols-2 gap-4">
-                                                                <span className="font-medium">Nomor Pendaftaran</span>
-                                                                <span>: {registrationData.regisNumber}</span>
-                                                            </p>
-                                                            <p className="grid grid-cols-2 gap-4">
-                                                                <span className="font-medium">Nama Lengkap</span>
-                                                                <span>: {registrationData.name}</span>
-                                                            </p>
-                                                            <p className="grid grid-cols-2 gap-4">
-                                                                <span className="font-medium">Tempat Lahir</span>
-                                                                <span>: {registrationData.birthPlace}</span>
-                                                            </p>
-                                                            <p className="grid grid-cols-2 gap-4">
-                                                                <span className="font-medium">Alamat Asal</span>
-                                                                <span>: {format(registrationData.birthDate, 'dd-MM-yyyy')}</span>
-                                                            </p>
-                                                            <p className="grid grid-cols-2 gap-4">
-                                                                <span className="font-medium">Provinsi Asal</span>
-                                                                <span>: {registrationData.province}</span>
-                                                            </p>
-                                                            <p className="grid grid-cols-2 gap-4">
-                                                                <span className="font-medium">Kab/Kota Asal</span>
-                                                                <span>: {registrationData.city}</span>
-                                                            </p>
-                                                            <p className="grid grid-cols-2 gap-4">
-                                                                <span className="font-medium">Kode Pos Asal</span>
-                                                                <span>: {registrationData.postalCode}</span>
-                                                            </p>
-                                                            <p className="grid grid-cols-2 gap-4">
-                                                                <span className="font-medium">NIK</span>
-                                                                <span>: {registrationData.nik}</span>
-                                                            </p>
-                                                        </div>
-                                                        <div className="mt-4 space-y-2">
-                                                            <h3 className="text-lg font-medium md:text-xl">DATA ORANG TUA</h3>
-                                                            <p className="grid grid-cols-2 gap-4">
-                                                                <span className="font-medium">Nama Ayah</span>
-                                                                <span>: {registrationData.fatherName}</span>
-                                                            </p>
-                                                            <p className="grid grid-cols-2 gap-4">
-                                                                <span className="font-medium">Nama Ibu</span>
-                                                                <span>: {registrationData.motherName}</span>
-                                                            </p>
-                                                            <p className="grid grid-cols-2 gap-4">
-                                                                <span className="font-medium">No HP Orang Tua</span>
-                                                                <span>: {registrationData.parentPhone}</span>
-                                                            </p>
-                                                            <p className="grid grid-cols-2 gap-4">
-                                                                <span className="font-medium">Email</span>
-                                                                <span>: {registrationData.parentEmail}</span>
-                                                            </p>
-                                                        </div>
-                                                    </div>
+                                                    {/* Revision alert */}
+                                                    <Alert variant="warning">
+                                                        <MessageSquareWarning />
+                                                        <AlertTitle>Revisi!</AlertTitle>
+                                                        <AlertDescription>
+                                                            Silahkan lengkapi data dan dokumen yang diperlukan untuk proses pendaftaran.
+                                                        </AlertDescription>
+                                                    </Alert>
+
+                                                    <Tabs defaultValue="data">
+                                                        <TabsList className="grid w-full grid-cols-2">
+                                                            <TabsTrigger value="data">Data calon santri</TabsTrigger>
+                                                            <TabsTrigger value="document">Dokumen calon santri</TabsTrigger>
+                                                        </TabsList>
+                                                        <TabsContent value="data">
+                                                            <div className="space-y-2">
+                                                                <h3 className="text-lg font-medium md:text-xl">DATA PRIBADI</h3>
+                                                                <p className="grid grid-cols-2 gap-4">
+                                                                    <span className="font-medium">Nomor Pendaftaran</span>
+                                                                    <span>: {registrationData.regisNumber}</span>
+                                                                </p>
+                                                                <p className="grid grid-cols-2 gap-4">
+                                                                    <span className="font-medium">Nama Lengkap</span>
+                                                                    <span>: {registrationData.name}</span>
+                                                                </p>
+                                                                <p className="grid grid-cols-2 gap-4">
+                                                                    <span className="font-medium">Tempat Lahir</span>
+                                                                    <span>: {registrationData.birthPlace}</span>
+                                                                </p>
+                                                                <p className="grid grid-cols-2 gap-4">
+                                                                    <span className="font-medium">Alamat Asal</span>
+                                                                    <span>: {format(registrationData.birthDate, 'dd-MM-yyyy')}</span>
+                                                                </p>
+                                                                <p className="grid grid-cols-2 gap-4">
+                                                                    <span className="font-medium">Provinsi Asal</span>
+                                                                    <span>: {registrationData.province}</span>
+                                                                </p>
+                                                                <p className="grid grid-cols-2 gap-4">
+                                                                    <span className="font-medium">Kab/Kota Asal</span>
+                                                                    <span>: {registrationData.city}</span>
+                                                                </p>
+                                                                <p className="grid grid-cols-2 gap-4">
+                                                                    <span className="font-medium">Kode Pos Asal</span>
+                                                                    <span>: {registrationData.postalCode}</span>
+                                                                </p>
+                                                                <p className="grid grid-cols-2 gap-4">
+                                                                    <span className="font-medium">NIK</span>
+                                                                    <span>: {registrationData.nik}</span>
+                                                                </p>
+                                                            </div>
+                                                            <div className="mt-4 space-y-2">
+                                                                <h3 className="text-lg font-medium md:text-xl">DATA ORANG TUA</h3>
+                                                                <p className="grid grid-cols-2 gap-4">
+                                                                    <span className="font-medium">Nama Ayah</span>
+                                                                    <span>: {registrationData.fatherName}</span>
+                                                                </p>
+                                                                <p className="grid grid-cols-2 gap-4">
+                                                                    <span className="font-medium">Nama Ibu</span>
+                                                                    <span>: {registrationData.motherName}</span>
+                                                                </p>
+                                                                <p className="grid grid-cols-2 gap-4">
+                                                                    <span className="font-medium">No HP Orang Tua</span>
+                                                                    <span>: {registrationData.parentPhone}</span>
+                                                                </p>
+                                                                <p className="grid grid-cols-2 gap-4">
+                                                                    <span className="font-medium">Email</span>
+                                                                    <span>: {registrationData.parentEmail}</span>
+                                                                </p>
+                                                            </div>
+                                                        </TabsContent>
+                                                        <TabsContent value="document">
+                                                            <div className="space-y-2">
+                                                                <DocumentItem label="Scan/Foto Kartu Keluarga" />
+                                                                <DocumentItem label="Scan/Foto Akta Kelahiran" />
+                                                                <DocumentItem label="Scan/Foto Ijazah/SKL" />
+                                                                <DocumentItem label="Scan/Foto Foto Formal" />
+                                                            </div>
+                                                        </TabsContent>
+                                                    </Tabs>
                                                     <DialogFooter>
                                                         <DialogClose asChild>
                                                             <Button type="button" variant="outline">

@@ -1,4 +1,5 @@
 import { Chip, ChipVariants } from '@/components/chip';
+import DocumentItem from '@/components/Document-item';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,7 +11,7 @@ import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { format } from 'date-fns';
-import { AlertCircle, CheckCircle, Clock, FileText } from 'lucide-react';
+import { AlertCircle, CheckCircle, Clock } from 'lucide-react';
 
 type UserData = {
     id: number;
@@ -231,20 +232,6 @@ function DataItem({ label, value }: { label: string; value: string }) {
         <div className="space-y-1">
             <p className="text-sm font-medium">{label}</p>
             <p className="text-muted-foreground text-sm">{value}</p>
-        </div>
-    );
-}
-
-function DocumentItem({ label }: { label: string }) {
-    return (
-        <div className="flex items-center gap-4 rounded-md border p-4">
-            <FileText className="text-muted-foreground h-8 w-8" />
-            <div>
-                <p className="font-medium">{label}</p>
-            </div>
-            <Button variant="outline" className="ml-auto">
-                Lihat
-            </Button>
         </div>
     );
 }

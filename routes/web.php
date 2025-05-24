@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\SantriController;
 use App\Http\Controllers\BerkasController;
 use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\PembayaranController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -31,7 +32,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('berkas', 'store')->name('berkas.store');
     });
 
-    Route::post('/daftar-program', [ProgramController::class, 'store'])->name('program.store');
+    Route::controller(ProgramController::class)->group(function () {
+        Route::post('/daftar-program', 'store')->name('program.store');
+    });
+
+    Route::controller(PembayaranController::class)->prefix('pembayaran')->group(function () {
+        Route::get('/', 'index')->name('pembayaran');
+        Route::get('/bayar', 'show')->name('pembayaran.detail');
+        Route::patch('/{pembayaran}/update-method', 'update')->name('pembayaran.update-method');
+        Route::patch('/{pembayaran}/pay', 'pay')->name('pembayaran.pay');
+    });
 
     Route::get('dashboard', function (Request $request) {
         // Check if the user is an admin
@@ -43,16 +53,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::get('berkas', function () {
-        return Inertia::render('dashboard/berkas',);
+        return Inertia::render('dashboard/berkas', );
     })->name('berkas');
-
-    Route::get('pembayaran', function () {
-        return Inertia::render('dashboard/pembayaran');
-    })->name('pembayaran');
-
-    Route::get('pembayaran/bayar', function () {
-        return Inertia::render('dashboard/detail-pembayaran');
-    })->name('detail-pembayaran');
 
     Route::get('/daftar', function () {
         return Inertia::render('dashboard/daftar-program');

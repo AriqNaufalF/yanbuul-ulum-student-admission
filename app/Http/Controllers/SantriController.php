@@ -74,7 +74,7 @@ class SantriController extends Controller
                 'email_aktif' => $validated['email'],
                 'tanggal_daftar' => now(),
                 'nomor_pendaftaran' => mt_rand(1000000000, 9999999999),
-                'status' => 'diproses',
+                'status' => 'Belum Lunas',
                 'schoolOrigin' => $validated['schoolOrigin'],
                 'graduationYear' => $validated['graduationYear'],
             ]

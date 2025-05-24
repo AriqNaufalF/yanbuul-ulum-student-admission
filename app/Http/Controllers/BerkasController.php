@@ -25,6 +25,10 @@ class BerkasController extends Controller
 
         $santri = Auth::user()->santri;
 
+        if (!$santri) {
+            return redirect()->back()->withErrors(['general' => 'Silakan isi data diri terlebih dahulu.']);
+        }
+        
         $kkPath = $request->file('kartu_keluarga')->store('berkas/kk', 'public');
         $aktaPath = $request->file('akta_lahir')->store('berkas/akta', 'public');
         $ijazahPath = $request->file('ijazah')->store('berkas/ijazah', 'public');

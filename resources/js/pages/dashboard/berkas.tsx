@@ -55,8 +55,12 @@ export default function Berkas() {
                     fotoFormal: null,
                 });
             },
-            onError: () => {
-                toast.error('Gagal mengunggah berkas. Periksa data Anda.');
+            onError: (errors) => {
+                if (errors.general) {
+                    toast.error(errors.general);
+                } else {
+                    toast.error('Gagal mengunggah berkas. Periksa data Anda.');
+                }
             },
         });
     };

@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\SantriController;
 use App\Http\Controllers\BerkasController;
+use App\Http\Controllers\ProgramController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -29,6 +30,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::controller(BerkasController::class)->group(function () {
         Route::post('berkas', 'store')->name('berkas.store');
     });
+
+    Route::post('/daftar-program', [ProgramController::class, 'store'])->name('program.store');
 
     Route::get('dashboard', function (Request $request) {
         // Check if the user is an admin

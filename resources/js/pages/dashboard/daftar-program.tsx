@@ -10,6 +10,7 @@ import { BreadcrumbItem, SharedData } from '@/types';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -37,9 +38,19 @@ export default function DaftarProgram() {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
-        console.log(data);
-    };
+        post(route('program.store'), {
+            onSuccess: () => {
+                toast.success('Program berhasil didaftarkan!');
+            },
+            onError: (errors) => {
+                if (errors.general) {
+                    toast.error(errors.general);
+                } else {
+                    toast.error('Terjadi kesalahan saat mendaftarkan program.');
+                }
+            },
+        });
+    };    
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Daftar Seleksi" />

@@ -19,6 +19,7 @@ class DashboardController extends Controller
         $santri = $user->santri;
 
         $hasPayment = $santri && $santri->pembayaran()->exists();
+        $berkas = $santri && $santri->berkas ? $santri->berkas : null;
 
         return Inertia::render('dashboard', [
             'registrationData' => $santri && $hasPayment ? [
@@ -40,10 +41,10 @@ class DashboardController extends Controller
                 'motherName' => $santri->ibu,
                 'parentPhone' => $santri->no_aktif,
                 'parentEmail' => $santri->email_aktif,
-                'kk' => $santri->kk_url ?? '',
-                'akta' => $santri->akta_url ?? '',
-                'certificate' => $santri->certificate_url ?? '',
-                'photo' => $santri->photo_url ?? '',
+                'kk' => $berkas?->kk ? asset('storage/' . $berkas->kk) : '',
+                'akta' => $berkas?->akta ? asset('storage/' . $berkas->akta) : '',
+                'certificate' => $berkas?->ijazah ? asset('storage/' . $berkas->ijazah) : '',
+                'photo' => $berkas?->foto_formal ? asset('storage/' . $berkas->foto_formal) : '',
             ] : null,
         ]);
     }

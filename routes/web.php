@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Http\Controllers\SantriController;
+use App\Http\Controllers\BerkasController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -23,6 +24,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::controller(SantriController::class)->group(function () {
         Route::get('/data-calon-santri', 'create')->name('santri.create');
         Route::post('/data-calon-santri', 'store')->name('santri.store');
+    });
+
+    Route::controller(BerkasController::class)->group(function () {
+        Route::post('berkas', 'store')->name('berkas.store');
     });
 
     Route::get('dashboard', function (Request $request) {

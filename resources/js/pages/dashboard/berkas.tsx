@@ -6,9 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, SharedData } from '@/types';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -36,8 +37,28 @@ export default function Berkas() {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        // Handle form submission
-        console.log(data);
+        const formData = new FormData();
+        formData.append('kartu_keluarga', data.kartuKeluarga as File);
+        formData.append('akta_lahir', data.aktaLahir as File);
+        formData.append('ijazah', data.ijazah as File);
+        formData.append('foto_formal', data.fotoFormal as File);
+
+        router.post(route('berkas.store'), formData, {
+            forceFormData: true,
+            onSuccess: () => {
+                toast.success('Berkas berhasil diunggah!');
+                setData({
+                    userId: auth.user.id,
+                    kartuKeluarga: null,
+                    aktaLahir: null,
+                    ijazah: null,
+                    fotoFormal: null,
+                });
+            },
+            onError: () => {
+                toast.error('Gagal mengunggah berkas. Periksa data Anda.');
+            },
+        });
     };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

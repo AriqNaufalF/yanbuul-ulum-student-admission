@@ -31,7 +31,8 @@ class Santri extends Model
         'email_aktif',
         'schoolOrigin',
         'graduationYear',
-        'program'
+        'program',
+        'komentar'
     ];
 
     protected $casts = [

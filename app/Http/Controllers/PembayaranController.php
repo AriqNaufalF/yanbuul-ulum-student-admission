@@ -104,6 +104,14 @@ class PembayaranController extends Controller
             'metode_pembayaran' => $request->method,
         ]);
 
+        $santri = Santri::where('nomor_pendaftaran', $pembayaran->id_pendaftaran)->first();
+        if ($santri) {
+            $santri->update([
+                'status' => 'Menunggu',
+                'komentar' => 'Data sedang dicek admin.',
+            ]);
+        }
+
         return back()->with('success', 'Pembayaran berhasil diselesaikan.');
     }
 }

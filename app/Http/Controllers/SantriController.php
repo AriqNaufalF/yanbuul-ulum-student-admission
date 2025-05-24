@@ -53,7 +53,6 @@ class SantriController extends Controller
             'graduationYear' => 'required|string|max:10',
         ]);
 
-        // Simpan data ke database
         Santri::updateOrCreate(
             ['user_id' => Auth::id()],
             [
@@ -75,6 +74,7 @@ class SantriController extends Controller
                 'tanggal_daftar' => now(),
                 'nomor_pendaftaran' => mt_rand(1000000000, 9999999999),
                 'status' => 'Belum Lunas',
+                'komentar' => 'Silakan lakukan pembayaran.',
                 'schoolOrigin' => $validated['schoolOrigin'],
                 'graduationYear' => $validated['graduationYear'],
             ]

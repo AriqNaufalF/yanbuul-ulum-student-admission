@@ -8,6 +8,7 @@ use App\Http\Controllers\SantriController;
 use App\Http\Controllers\BerkasController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -43,14 +44,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('/{pembayaran}/pay', 'pay')->name('pembayaran.pay');
     });
 
-    Route::get('dashboard', function (Request $request) {
-        // Check if the user is an admin
-        $isAdmin = $request->user()->isAdmin;
-        if ($isAdmin) {
-            return Inertia::render('admin-dashboard');
-        }
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
 
     Route::get('berkas', function () {
         return Inertia::render('dashboard/berkas', );

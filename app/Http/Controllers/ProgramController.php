@@ -10,6 +10,11 @@ use Inertia\Inertia;
 
 class ProgramController extends Controller
 {
+    public function index(Request $request)
+    {
+        return Inertia::render('dashboard/daftar-program');
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([

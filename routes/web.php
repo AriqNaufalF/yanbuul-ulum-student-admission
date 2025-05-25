@@ -30,10 +30,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::controller(BerkasController::class)->group(function () {
+        Route::get('berkas', 'index')->name('berkas.index');
         Route::post('berkas', 'store')->name('berkas.store');
     });
 
     Route::controller(ProgramController::class)->group(function () {
+        Route::get('/daftar', 'index')->name('program.index');
         Route::post('/daftar-program', 'store')->name('program.store');
     });
 
@@ -45,15 +47,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-
-    Route::get('berkas', function () {
-        return Inertia::render('dashboard/berkas', );
-    })->name('berkas');
-
-    Route::get('/daftar', function () {
-        return Inertia::render('dashboard/daftar-program');
-    });
 
     // Admin Routes
     Route::get('/manajemen-pendaftar', function () {

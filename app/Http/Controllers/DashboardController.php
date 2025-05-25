@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use App\Models\Santri;
+use App\Models\Pembayaran;
 
 class DashboardController extends Controller
 {
@@ -13,7 +15,33 @@ class DashboardController extends Controller
         $user = $request->user();
 
         if ($user->isAdmin) {
-            return Inertia::render('admin-dashboard');
+
+            $totalPendaftar = Santri::count();
+
+            $statusCounts = [
+                'menunggu' => Santri::where('status', 'menunggu')->count(),
+                'revisi' => Santri::where('status', 'revisi')->count(),
+                'ditolak' => Santri::where('status', 'ditolak')->count(),
+                'selesai' => Santri::where('status', 'selesai')->count(),
+            ];
+
+            $pembayaranCounts = [
+                'lunas' => Pembayaran::where('status', 'lunas')->count(),
+                'belum_lunas' => Pembayaran::where('status', 'belum lunas')->count(),
+            ];
+
+            $pendaftarPerBulan = Santri::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+                ->groupBy('month')
+                ->orderBy('month')
+                ->get();
+
+            return Inertia::render('admin-dashboard', [
+                'totalPendaftar' => $totalPendaftar,
+                'statusCounts' => $statusCounts,
+                'pembayaranCounts' => $pembayaranCounts,
+                'pendaftarPerBulan' => $pendaftarPerBulan,
+            ]);
+
         }
 
         $santri = $user->santri;

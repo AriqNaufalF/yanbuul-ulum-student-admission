@@ -49,39 +49,49 @@ type RiwayatPendidikan = {
     graduationYear: string;
 };
 
-export default function DataCalonSantri() {
+export default function DataCalonSantri({ dataCalonSantri }: { dataCalonSantri: ProspectiveStudent & ParentData & RiwayatPendidikan }) {
     const { auth } = usePage<SharedData>().props;
     const [provinces, setProvinces] = useState<Province[]>([]);
     const [cities, setCities] = useState<City[]>([]);
     const [selectedProvince, setSelectedProvince] = useState<string>('');
+    const [selectedCity, setSelectedCity] = useState<string>('');
     const [loadingProvinces, setLoadingProvinces] = useState<boolean>(false);
     const [loadingCities, setLoadingCities] = useState<boolean>(false);
 
     const { data, setData, processing, errors, post } = useForm<ProspectiveStudent & ParentData & RiwayatPendidikan>({
         userId: auth.user.id,
-        name: '',
-        nik: '',
-        gender: '',
-        birthPlace: '',
-        address: '',
-        province: '',
-        city: '',
-        postalCode: '',
-        phone: '',
-        email: '',
-        fathersName: '',
-        fathersJob: '',
-        mothersName: '',
-        mothersJob: '',
-        schoolOrigin: '',
-        graduationYear: '',
+        name: dataCalonSantri.name ?? '',
+        nik: dataCalonSantri.nik ?? '',
+        gender: dataCalonSantri.gender ?? '',
+        birthPlace: dataCalonSantri.birthPlace ?? '',
+        birthDate: dataCalonSantri.birthDate ? new Date(dataCalonSantri.birthDate) : undefined,
+        address: dataCalonSantri.address ?? '',
+        province: dataCalonSantri.province ?? '',
+        city: dataCalonSantri.city ?? '',
+        postalCode: dataCalonSantri.postalCode ?? '',
+        phone: dataCalonSantri.phone ?? '',
+        email: dataCalonSantri.email ?? '',
+        fathersName: dataCalonSantri.fathersName ?? '',
+        fathersJob: dataCalonSantri.fathersJob ?? '',
+        mothersName: dataCalonSantri.mothersName ?? '',
+        mothersJob: dataCalonSantri.mothersJob ?? '',
+        schoolOrigin: dataCalonSantri.schoolOrigin ?? '',
+        graduationYear: dataCalonSantri.graduationYear ?? '',
     });
 
     // Fetch provinces on component mount
     useEffect(() => {
         setLoadingProvinces(true);
         getProvinces()
-            .then(setProvinces)
+            .then((data) => {
+                setProvinces(data);
+                if (dataCalonSantri.province) {
+                    const selectedProv = data.find(({ name }) => name === dataCalonSantri.province);
+                    if (selectedProv) {
+                        setSelectedProvince(selectedProv.id);
+                    }
+                }
+            })
             .catch((error: Error) => {
                 console.error(error.message);
             })
@@ -93,18 +103,37 @@ export default function DataCalonSantri() {
         if (selectedProvince !== '') {
             setLoadingCities(true);
             getCities(selectedProvince)
-                .then(setCities)
+                .then((data) => {
+                    setCities(data);
+                    if (dataCalonSantri.city) {
+                        const selectedCity = data.find(({ name }) => name === dataCalonSantri.city);
+                        if (selectedCity) {
+                            setSelectedCity(selectedCity.id);
+                        }
+                    }
+                })
                 .catch((error: Error) => {
                     console.error(error.message);
                 })
                 .finally(() => setLoadingCities(false));
-
-            setData('province', provinces.find(({ id }) => id === selectedProvince)!.name);
-            setData('city', '');
         }
     }, [selectedProvince]);
 
     const handleProvinceChange = (val: string) => {
+        if (!val) return;
+
+        setSelectedProvince(val);
+        const selectedProv = provinces.find(({ id }) => id === val);
+        if (selectedProv) {
+            setData('province', selectedProv.name);
+            setData('city', ''); // Reset city when province changes
+        }
+    };
+
+    const handleCityChange = (val: string) => {
+        if (!val) return;
+
+        setSelectedCity(val);
         const selectedCity = cities.find(({ id }) => id === val);
         if (selectedCity) {
             setData('city', selectedCity.name);
@@ -223,7 +252,7 @@ export default function DataCalonSantri() {
                                 </FormItem>
                                 <FormItem>
                                     <Label htmlFor="province">Provinsi Asal</Label>
-                                    <Select onValueChange={setSelectedProvince} defaultValue={data.province}>
+                                    <Select onValueChange={handleProvinceChange} value={selectedProvince || ''}>
                                         <SelectTrigger className="w-full">
                                             <SelectValue placeholder="Pilih Provinsi asal" />
                                         </SelectTrigger>
@@ -241,7 +270,7 @@ export default function DataCalonSantri() {
                                 </FormItem>
                                 <FormItem>
                                     <Label htmlFor="city">Kab/kota Asal</Label>
-                                    <Select onValueChange={handleProvinceChange} defaultValue={data.city}>
+                                    <Select onValueChange={handleCityChange} value={selectedCity || ''}>
                                         <SelectTrigger className="w-full">
                                             <SelectValue placeholder="Pilih Kab/Kota asal" />
                                         </SelectTrigger>

@@ -12,7 +12,13 @@ class ProgramController extends Controller
 {
     public function index(Request $request)
     {
-        return Inertia::render('dashboard/daftar-program');
+        $santri = $request->user()->santri;
+        $pembayaran = $santri?->pembayaran;
+        return Inertia::render('dashboard/daftar-program', [
+            'isRegistered' => $santri?->program ? true : false,
+            'program' => $santri?->program,
+            'method' => $pembayaran?->metode_pembayaran,
+        ]);
     }
 
     public function store(Request $request)

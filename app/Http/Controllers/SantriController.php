@@ -22,9 +22,34 @@ class SantriController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        return Inertia::render('dashboard/data-calon-santri');
+        $santri = $request->user()->santri;
+        $dataCalonSantri = [];
+        if ($santri) {
+            $dataCalonSantri = [
+                'name' => $santri->nama,
+                'nik' => $santri->nik,
+                'birthPlace' => $santri->tempat_lahir,
+                'birthDate' => $santri->tanggal_lahir,
+                'gender' => $santri->jenis_kelamin,
+                'address' => $santri->alamat,
+                'province' => $santri->provinsi,
+                'city' => $santri->kabkota,
+                'postalCode' => $santri->kode_pos,
+                'fathersName' => $santri->ayah,
+                'fathersJob' => $santri->pekerjaan_ayah,
+                'mothersName' => $santri->ibu,
+                'mothersJob' => $santri->pekerjaan_ibu,
+                'phone' => $santri->no_aktif,
+                'email' => $santri->email_aktif,
+                'schoolOrigin' => $santri->schoolOrigin,
+                'graduationYear' => $santri->graduationYear,
+            ];
+        }
+
+
+        return Inertia::render('dashboard/data-calon-santri', compact('dataCalonSantri'));
     }
 
     /**

@@ -28,12 +28,12 @@ const paymentMethods = [
     { value: 'BRI Virtual Account', label: 'BRI Virtual Account' },
 ];
 
-export default function DaftarProgram() {
+export default function DaftarProgram({ isRegistered, method, program }: { isRegistered: boolean; method: string | null; program: string | null }) {
     const { auth } = usePage<SharedData>().props;
     const { data, setData, post, processing, errors } = useForm({
         userId: auth.user.id,
-        program: '',
-        method: '',
+        program: program || '',
+        method: method || '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -50,7 +50,7 @@ export default function DaftarProgram() {
                 }
             },
         });
-    };    
+    };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Daftar Seleksi" />
@@ -67,7 +67,7 @@ export default function DaftarProgram() {
                             <div className="space-y-4">
                                 <FormItem>
                                     <Label htmlFor="program">Program</Label>
-                                    <Select onValueChange={(value) => setData('program', value)} defaultValue={data.program}>
+                                    <Select onValueChange={(value) => setData('program', value)} defaultValue={data.program} disabled={isRegistered}>
                                         <SelectTrigger className="w-full">
                                             <SelectValue placeholder="Pilih Program" />
                                         </SelectTrigger>
@@ -81,7 +81,7 @@ export default function DaftarProgram() {
                                 </FormItem>
                                 <FormItem>
                                     <Label>Metode Bayar</Label>
-                                    <Select onValueChange={(val) => setData('method', val)} defaultValue={data.method}>
+                                    <Select onValueChange={(val) => setData('method', val)} defaultValue={data.method} disabled={isRegistered}>
                                         <SelectTrigger className="w-full">
                                             <SelectValue placeholder="Pilih metode pembayaran" />
                                         </SelectTrigger>
@@ -109,7 +109,7 @@ export default function DaftarProgram() {
                             </div>
                         </div>
                         <div className="mt-4 flex justify-end">
-                            <Button type="submit" disabled={processing}>
+                            <Button type="submit" disabled={processing || isRegistered}>
                                 {processing && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
                                 Daftar
                             </Button>

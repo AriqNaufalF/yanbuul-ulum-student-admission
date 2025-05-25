@@ -15,7 +15,7 @@ class ProgramController extends Controller
         $santri = $request->user()->santri;
         $pembayaran = $santri?->pembayaran;
         return Inertia::render('dashboard/daftar-program', [
-            'isRegistered' => $santri?->program ? true : false,
+            'isRegistered' => $pembayaran ? true : false,
             'program' => $santri?->program,
             'method' => $pembayaran?->metode_pembayaran,
         ]);
@@ -34,25 +34,35 @@ class ProgramController extends Controller
 
         if (!$santri || !$berkas) {
             return redirect()->back()->withErrors([
-                'general' => 'Silakan isi data diri & unggah berkas terlebih dahulu.'
+                'general' => 'Silakan lengkapi data diri dan unggah berkas terlebih dahulu!',
+            ]);
+        }
+
+        $pembayaran = Pembayaran::where('id_pendaftaran', $santri->nomor_pendaftaran)->first();
+        if ($pembayaran) {
+            return redirect()->back()->withErrors([
+                'general' => 'Anda sudah mendaftar dan memiliki data pembayaran!',
             ]);
         }
 
         $santri->update([
             'program' => $validated['program'],
+            'status' => 'Belum Lunas',
         ]);
 
-        Pembayaran::updateOrCreate(
-            ['id_pendaftaran' => $santri->nomor_pendaftaran],
-            [
-                'total' => 200000,
-                'metode_pembayaran' => $validated['method'],
-                'tanggal_tempo' => now()->addWeek(),
-                'status' => 'belum lunas',
-                'berkas_id' => $berkas->id,
-            ]
-        );
+        $santri->update([
+            'program' => $validated['program'],
+        ]);
 
-        return redirect()->back()->with('success', 'Program berhasil didaftarkan!');
+        Pembayaran::create([
+            'id_pendaftaran' => $santri->nomor_pendaftaran,
+            'total' => 200000,
+            'metode_pembayaran' => $validated['method'],
+            'tanggal_tempo' => now()->addWeek(),
+            'status' => 'Belum Lunas',
+            'berkas_id' => $berkas->id,
+        ]);
+
+        return redirect()->back()->with('success', 'Program berhasil didaftarkan! Silakan lanjutkan ke pembayaran.');
     }
 }

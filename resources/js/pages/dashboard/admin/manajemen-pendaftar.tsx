@@ -23,6 +23,7 @@ interface Pendaftar {
     name: string;
     date: string;
     status: Status;
+    program: string;
 }
 
 export default function ManajemenPendaftar() {
@@ -36,6 +37,11 @@ export default function ManajemenPendaftar() {
         {
             accessorKey: 'name',
             header: 'Nama',
+        },
+        {
+            accessorKey: 'program',
+            header: 'Program',
+            cell: ({ row }) => row.getValue('program') || '-',
         },
         {
             accessorKey: 'date',

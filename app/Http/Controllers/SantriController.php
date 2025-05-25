@@ -78,32 +78,36 @@ class SantriController extends Controller
             'graduationYear' => 'required|string|max:10',
         ]);
 
-        Santri::updateOrCreate(
-            ['user_id' => Auth::id()],
-            [
-                'nama' => $validated['name'],
-                'nik' => $validated['nik'],
-                'tempat_lahir' => $validated['birthPlace'],
-                'tanggal_lahir' => $validated['birthDate'],
-                'jenis_kelamin' => $validated['gender'],
-                'alamat' => $validated['address'],
-                'provinsi' => $validated['province'],
-                'kabkota' => $validated['city'],
-                'kode_pos' => $validated['postalCode'],
-                'ayah' => $validated['fathersName'],
-                'pekerjaan_ayah' => $validated['fathersJob'],
-                'ibu' => $validated['mothersName'],
-                'pekerjaan_ibu' => $validated['mothersJob'],
-                'no_aktif' => $validated['phone'],
-                'email_aktif' => $validated['email'],
-                'tanggal_daftar' => now(),
-                'nomor_pendaftaran' => mt_rand(1000000000, 9999999999),
-                'status' => 'Belum Lunas',
-                'komentar' => 'Silakan lakukan pembayaran.',
-                'schoolOrigin' => $validated['schoolOrigin'],
-                'graduationYear' => $validated['graduationYear'],
-            ]
-        );
+        $santri = Santri::where('user_id', Auth::id())->first();
+
+        if (!$santri) {
+            $santri = new Santri();
+            $santri->user_id = Auth::id();
+            $santri->nomor_pendaftaran = mt_rand(1000000000, 9999999999);
+        }
+
+        $santri->fill([
+            'nama' => $validated['name'],
+            'nik' => $validated['nik'],
+            'tempat_lahir' => $validated['birthPlace'],
+            'tanggal_lahir' => $validated['birthDate'],
+            'jenis_kelamin' => $validated['gender'],
+            'alamat' => $validated['address'],
+            'provinsi' => $validated['province'],
+            'kabkota' => $validated['city'],
+            'kode_pos' => $validated['postalCode'],
+            'ayah' => $validated['fathersName'],
+            'pekerjaan_ayah' => $validated['fathersJob'],
+            'ibu' => $validated['mothersName'],
+            'pekerjaan_ibu' => $validated['mothersJob'],
+            'no_aktif' => $validated['phone'],
+            'email_aktif' => $validated['email'],
+            'tanggal_daftar' => now(),
+            'status' => 'Menunggu',
+            'komentar' => 'Data sedang dicek admin.',
+            'schoolOrigin' => $validated['schoolOrigin'],
+            'graduationYear' => $validated['graduationYear'],
+        ])->save();
 
         return redirect()->back()->with('success', 'Data santri berhasil disimpan');
     }

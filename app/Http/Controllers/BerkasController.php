@@ -21,14 +21,14 @@ class BerkasController extends Controller
             'akta_lahir' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'ijazah' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
             'foto_formal' => 'required|file|mimes:jpg,jpeg,png|max:2048',
-        ]);        
+        ]);
 
         $santri = Auth::user()->santri;
 
         if (!$santri) {
             return redirect()->back()->withErrors(['general' => 'Silakan isi data diri terlebih dahulu.']);
         }
-        
+
         $kkPath = $request->file('kartu_keluarga')->store('berkas/kk', 'public');
         $aktaPath = $request->file('akta_lahir')->store('berkas/akta', 'public');
         $ijazahPath = $request->file('ijazah')->store('berkas/ijazah', 'public');
@@ -43,6 +43,11 @@ class BerkasController extends Controller
                 'foto_formal' => $fotoPath,
             ]
         );
+
+        $santri->update([
+            'status' => 'Menunggu',
+            'komentar' => 'Data sedang dicek admin.',
+        ]);
 
         return redirect()->back()->with('success', 'Berkas berhasil diunggah!');
     }

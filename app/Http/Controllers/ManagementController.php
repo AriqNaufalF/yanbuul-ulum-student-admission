@@ -17,6 +17,7 @@ class ManagementController extends Controller
                 'name' => $santri->nama,
                 'date' => optional($santri->pembayaran)->created_at ?? $santri->created_at,
                 'status' => $santri->status,
+                'program' => $santri->program,
             ];
         });
 

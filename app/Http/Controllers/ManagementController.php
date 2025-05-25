@@ -10,16 +10,20 @@ class ManagementController extends Controller
 {
     public function index()
     {
-        $pendaftar = Santri::with('pembayaran')->get()->map(function ($santri) {
-            return [
-                'id' => $santri->id,
-                'regisNum' => $santri->nomor_pendaftaran,
-                'name' => $santri->nama,
-                'date' => optional($santri->pembayaran)->created_at ?? $santri->created_at,
-                'status' => $santri->status,
-                'program' => $santri->program,
-            ];
-        });
+        $pendaftar = Santri::with('pembayaran')
+            ->whereNotNull('program')
+            ->orWhereHas('pembayaran')
+            ->get()
+            ->map(function ($santri) {
+                return [
+                    'id' => $santri->id,
+                    'regisNum' => $santri->nomor_pendaftaran,
+                    'name' => $santri->nama,
+                    'date' => optional($santri->pembayaran)->created_at ?? $santri->created_at,
+                    'status' => $santri->status,
+                    'program' => $santri->program ?? '-',
+                ];
+            });
 
         return Inertia::render('dashboard/admin/manajemen-pendaftar', [
             'pendaftar' => $pendaftar,

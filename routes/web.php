@@ -9,6 +9,7 @@ use App\Http\Controllers\BerkasController;
 use App\Http\Controllers\ProgramController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ManagementController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -49,15 +50,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Admin Routes
-    Route::get('/manajemen-pendaftar', function () {
-        return Inertia::render('dashboard/admin/manajemen-pendaftar');
+    Route::prefix('manajemen-pendaftar')->controller(ManagementController::class)->group(function () {
+        Route::get('/', 'index')->name('manajemen-pendaftar.index');
+        Route::get('/{id}', 'show')->name('manajemen-pendaftar.show');
+        Route::patch('/{id}', 'update')->name('manajemen-pendaftar.update');
     });
-
-    Route::get('/manajemen-pendaftar/{id}', function ($id) {
-        return Inertia::render('dashboard/admin/detail-pendaftar', [
-            'id' => $id,
-        ]);
-    })->name('detail-pendaftar');
 });
 
 require __DIR__ . '/settings.php';

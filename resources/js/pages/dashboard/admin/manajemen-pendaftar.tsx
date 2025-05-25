@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 
@@ -15,123 +15,69 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-type Status = 'lulus' | 'menunggu' | 'ditolak' | 'revisi';
+type Status = 'Belum Lunas' | 'Menunggu' | 'Revisi' | 'Ditolak' | 'Selesai';
 
-type Pendaftar = {
+interface Pendaftar {
     id: number;
     regisNum: string;
     name: string;
-    date: Date;
+    date: string;
     status: Status;
-};
-
-const pendaftar: Pendaftar[] = [
-    {
-        id: 1,
-        regisNum: '123',
-        name: 'John Doe',
-        date: new Date(),
-        status: 'lulus',
-    },
-    {
-        id: 2,
-        regisNum: '1234',
-
-        name: 'Jane Doe',
-        date: new Date(),
-        status: 'menunggu',
-    },
-    {
-        id: 3,
-        regisNum: '12345',
-        name: 'John Smith',
-        date: new Date(),
-        status: 'ditolak',
-    },
-    {
-        id: 4,
-        regisNum: '123456',
-        name: 'Jane Smith',
-        date: new Date(),
-        status: 'revisi',
-    },
-];
-
-const columns: ColumnDef<Pendaftar>[] = [
-    {
-        accessorKey: 'regisNum',
-        header: 'No Pendaftaran',
-    },
-    {
-        accessorKey: 'name',
-        header: 'Nama',
-    },
-    {
-        accessorKey: 'date',
-        header: ({ column }) => <ColumnSorter column={column} title="Tanggal Daftar" />,
-        cell: ({ row }) => {
-            const date = row.getValue('date') as Date;
-            return format(date, 'dd-MM-yyyy');
-        },
-    },
-    {
-        accessorKey: 'status',
-        header: ({ column }) => (
-            <ColumnFilter
-                column={column}
-                title="Status"
-                valueFormat={(value) => {
-                    const status = value as Status;
-                    const statusCondition = {
-                        lulus: 'Lulus',
-                        menunggu: 'Di proses',
-                        revisi: 'Revisi',
-                        ditolak: 'Di tolak',
-                    };
-
-                    return statusCondition[status];
-                }}
-            />
-        ),
-        cell: ({ row }) => {
-            const statusCondition: { [key: string]: ChipVariants & { text: string } } = {
-                lulus: {
-                    text: 'Lulus',
-                    variant: 'success',
-                },
-                menunggu: {
-                    text: 'Menunggu',
-                    variant: 'warning',
-                },
-                revisi: {
-                    text: 'Revisi',
-                    variant: 'info',
-                },
-                ditolak: {
-                    text: 'Di tolak',
-                    variant: 'danger',
-                },
-            };
-            const status = statusCondition[row.getValue('status') as Status];
-
-            return <Chip variant={status.variant}>{status.text}</Chip>;
-        },
-    },
-    {
-        id: 'actions',
-        header: 'Aksi',
-        cell: ({ row }) => {
-            const data = row.original;
-            return (
-                <Button variant="link">
-                    <Link href={`/manajemen-pendaftar/${data.regisNum}`}>Detail</Link>
-                </Button>
-            );
-        },
-    },
-];
+}
 
 export default function ManajemenPendaftar() {
+    const { pendaftar } = usePage<{ pendaftar: Pendaftar[] }>().props;
+
+    const columns: ColumnDef<Pendaftar>[] = [
+        {
+            accessorKey: 'regisNum',
+            header: 'No Pendaftaran',
+        },
+        {
+            accessorKey: 'name',
+            header: 'Nama',
+        },
+        {
+            accessorKey: 'date',
+            header: ({ column }) => <ColumnSorter column={column} title="Tanggal Daftar" />,
+            cell: ({ row }) => {
+                const dateStr = row.getValue('date') as string;
+                return dateStr ? format(new Date(dateStr), 'dd-MM-yyyy') : '-';
+            },
+        },
+        {
+            accessorKey: 'status',
+            header: ({ column }) => <ColumnFilter column={column} title="Status" valueFormat={(value) => value as string} />,
+            cell: ({ row }) => {
+                const status = row.getValue('status') as Status;
+
+                const statusMap: Record<Status, ChipVariants & { text: string }> = {
+                    'Belum Lunas': { text: 'Belum Lunas', variant: 'danger' },
+                    Menunggu: { text: 'Menunggu', variant: 'warning' },
+                    Revisi: { text: 'Revisi', variant: 'info' },
+                    Ditolak: { text: 'Ditolak', variant: 'danger' },
+                    Selesai: { text: 'Selesai', variant: 'success' },
+                };
+
+                const statusData = statusMap[status] ?? { text: 'Tidak Diketahui', variant: 'danger' };
+
+                return <Chip variant={statusData.variant}>{statusData.text}</Chip>;
+            },
+        },
+        {
+            id: 'actions',
+            header: 'Aksi',
+            cell: ({ row }) => {
+                const data = row.original;
+                return (
+                    <Button variant="link">
+                        <Link href={`/manajemen-pendaftar/${data.id}`}>Detail</Link>
+                    </Button>
+                );
+            },
+        },
+    ];
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Manajemen Pendaftar" />

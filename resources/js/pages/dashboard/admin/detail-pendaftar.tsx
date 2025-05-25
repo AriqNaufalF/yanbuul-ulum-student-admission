@@ -1,6 +1,5 @@
 import { Chip, ChipVariants } from '@/components/chip';
 import DocumentItem from '@/components/Document-item';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { FormItem } from '@/components/ui/form';
@@ -9,26 +8,29 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, SharedData } from '@/types';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { AlertCircle, CheckCircle, Clock } from 'lucide-react';
+import { toast } from 'sonner';
 
-type UserData = {
+type Status = 'Selesai' | 'Menunggu' | 'Revisi' | 'Ditolak' | 'Belum Lunas';
+
+interface PendaftarData {
     id: number;
-    status: string;
     regisNum: string;
-    registrationDate: Date;
+    registrationDate: string;
+    status: Status;
     name: string;
     nik: string;
     gender: string;
     birthPlace: string;
-    birthDate: Date;
+    birthDate: string;
     address: string;
     province: string;
     city: string;
     postalCode: string;
     schoolOrigin: string;
-    graduationYear: number;
+    graduationYear: string;
     program: string;
     email: string;
     fathersName: string;
@@ -36,73 +38,43 @@ type UserData = {
     fathersJob: string;
     mothersJob: string;
     phone: string;
-};
-
-type Status = 'lulus' | 'menunggu' | 'ditolak' | 'revisi';
-
-const userData: UserData = {
-    id: 1,
-    regisNum: '123456789',
-    registrationDate: new Date(),
-    status: 'menunggu',
-    name: 'John Doe',
-    nik: '1234567890123456',
-    gender: 'Laki-laki',
-    birthPlace: 'New York',
-    birthDate: new Date('1990-01-01'),
-    address: '123 Main St, New York, NY 10001',
-    province: 'New York',
-    city: 'New York City',
-    postalCode: '10001',
-    program: 'MTS',
-    email: 'test@mail.com',
-    fathersName: 'John Doe Sr.',
-    mothersName: 'Jane Doe',
-    fathersJob: 'Engineer',
-    mothersJob: 'Teacher',
-    phone: '+1 (555) 987-6543',
-    schoolOrigin: 'ABC High School',
-    graduationYear: 2020,
-};
+    kk: string;
+    akta: string;
+    certificate: string;
+    photo: string;
+}
 
 export default function DetailPendaftar({ id }: { id: string }) {
-    const { auth } = usePage<SharedData>().props;
+    const { pendaftar, auth } = usePage<{ pendaftar: PendaftarData; auth: SharedData['auth'] }>().props;
+
     const breadcrumbs: BreadcrumbItem[] = [
-        {
-            title: 'Manajemen Pendaftar',
-            href: '/manajemen-pendaftar',
-        },
-        {
-            title: 'Detail Pendaftar',
-            href: `/manajemen-pendaftar/${id}`,
-        },
+        { title: 'Manajemen Pendaftar', href: '/manajemen-pendaftar' },
+        { title: 'Detail Pendaftar', href: `/manajemen-pendaftar/${id}` },
     ];
 
-    const { data, setData, processing, errors } = useForm({
-        id: userData.id,
+    const { data, setData, processing } = useForm({
+        id: pendaftar.id,
         adminId: auth.user.id,
         status: '',
         comment: '',
     });
 
     const handleClick = (action: string) => {
-        if (action === 'approve') {
-            // Handle approve action
-            console.log('Approve action');
-            return;
-        }
+        const statusMap: { [key: string]: string } = {
+            approve: 'selesai',
+            revision: 'revisi',
+            reject: 'ditolak',
+        };
+        const status = statusMap[action];
 
-        if (action === 'revision') {
-            // Handle revision action
-            console.log('Revision action');
-            return;
-        }
-
-        if (action === 'reject') {
-            // Handle reject action
-            console.log('Reject action');
-            return;
-        }
+        router.patch(
+            `/manajemen-pendaftar/${pendaftar.id}`,
+            { status, comment: data.comment },
+            {
+                onSuccess: () => toast.success('Status berhasil diperbarui!'),
+                onError: () => toast.error('Gagal memperbarui status!'),
+            },
+        );
     };
 
     return (
@@ -111,115 +83,111 @@ export default function DetailPendaftar({ id }: { id: string }) {
             <div className="@container">
                 <div className="grid gap-6 @4xl:grid-cols-3">
                     <div className="@4xl:col-span-2">
-                        {/* Student info list */}
+                        {/* Data pendaftar */}
                         <Card className="mb-6">
-                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardHeader className="flex flex-row items-center justify-between pb-2">
                                 <div>
-                                    <CardTitle>{userData.regisNum}</CardTitle>
-                                    <CardDescription>Tanggal registrasi: {format(userData.registrationDate, 'dd-MM-yyyy')}</CardDescription>
+                                    <CardTitle>{pendaftar.regisNum}</CardTitle>
+                                    <CardDescription>
+                                        Tanggal registrasi: {format(new Date(pendaftar.registrationDate), 'dd-MM-yyyy')}
+                                    </CardDescription>
                                 </div>
-                                <StatusChip status={userData.status as Status} />
+                                <StatusChip status={pendaftar.status} />
                             </CardHeader>
                             <CardContent>
                                 <Tabs defaultValue="student">
                                     <TabsList className="grid w-full grid-cols-2">
-                                        <TabsTrigger value="student">Data calon santri</TabsTrigger>
-                                        <TabsTrigger value="parent">Data orang tua santri</TabsTrigger>
+                                        <TabsTrigger value="student">Data Calon Santri</TabsTrigger>
+                                        <TabsTrigger value="parent">Data Orang Tua</TabsTrigger>
                                     </TabsList>
                                     <TabsContent value="student">
                                         <div className="grid gap-4 md:grid-cols-2">
-                                            <DataItem label="Nama Lengkap" value={userData.name} />
-                                            <DataItem label="NIK" value={userData.nik} />
-                                            <DataItem label="Tempat Lahir" value={userData.birthPlace} />
-                                            <DataItem label="Tanggal Lahir" value={format(userData.birthDate, 'dd-MM-yyyy')} />
-                                            <DataItem label="Sekolah Asal" value={userData.schoolOrigin} />
-                                            <DataItem label="Tahun Lulus" value={userData.graduationYear.toString()} />
-                                            <DataItem label="Jenis Kelamin" value={userData.gender} />
-                                            <DataItem label="Alamat" value={userData.address} />
-                                            <DataItem label="Provinsi" value={userData.province} />
-                                            <DataItem label="Kota" value={userData.city} />
-                                            <DataItem label="Kode Pos" value={userData.postalCode} />
-                                            <DataItem label="Program" value={userData.program} />
+                                            <DataItem label="Nama Lengkap" value={pendaftar.name} />
+                                            <DataItem label="NIK" value={pendaftar.nik} />
+                                            <DataItem label="Tempat Lahir" value={pendaftar.birthPlace} />
+                                            <DataItem label="Tanggal Lahir" value={format(new Date(pendaftar.birthDate), 'dd-MM-yyyy')} />
+                                            <DataItem label="Sekolah Asal" value={pendaftar.schoolOrigin} />
+                                            <DataItem label="Tahun Lulus" value={pendaftar.graduationYear.toString()} />
+                                            <DataItem label="Jenis Kelamin" value={pendaftar.gender} />
+                                            <DataItem label="Alamat" value={pendaftar.address} />
+                                            <DataItem label="Provinsi" value={pendaftar.province} />
+                                            <DataItem label="Kota" value={pendaftar.city} />
+                                            <DataItem label="Kode Pos" value={pendaftar.postalCode} />
+                                            <DataItem label="Program" value={pendaftar.program} />
                                         </div>
                                     </TabsContent>
                                     <TabsContent value="parent">
                                         <div className="grid gap-4 md:grid-cols-2">
-                                            <DataItem label="Email" value={userData.email} />
-                                            <DataItem label="Nomor Telepon" value={userData.phone} />
-                                            <DataItem label="Nama Ayah" value={userData.fathersName} />
-                                            <DataItem label="Pekerjaan Ayah" value={userData.fathersJob} />
-                                            <DataItem label="Nama Ibu" value={userData.mothersName} />
-                                            <DataItem label="Pekerjaan Ibu" value={userData.mothersJob} />
+                                            <DataItem label="Email" value={pendaftar.email} />
+                                            <DataItem label="Nomor Telepon" value={pendaftar.phone} />
+                                            <DataItem label="Nama Ayah" value={pendaftar.fathersName} />
+                                            <DataItem label="Pekerjaan Ayah" value={pendaftar.fathersJob} />
+                                            <DataItem label="Nama Ibu" value={pendaftar.mothersName} />
+                                            <DataItem label="Pekerjaan Ibu" value={pendaftar.mothersJob} />
                                         </div>
                                     </TabsContent>
                                 </Tabs>
                             </CardContent>
                         </Card>
-                        {/* Student document */}
+
+                        {/* Dokumen */}
                         <Card>
                             <CardHeader>
                                 <CardTitle>Berkas</CardTitle>
-                                <CardDescription>Berkas pendukung calon santri baru</CardDescription>
+                                <CardDescription>Berkas pendukung calon santri</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-4">
-                                    <DocumentItem label="Scan/Foto Kartu Keluarga" />
-                                    <DocumentItem label="Scan/Foto Akta Kelahiran" />
-                                    <DocumentItem label="Scan/Foto Ijazah/SKL" />
-                                    <DocumentItem label="Scan/Foto Foto Formal" />
+                                    <DocumentItem label="Scan/Foto Kartu Keluarga" url={pendaftar.kk} />
+                                    <DocumentItem label="Scan/Foto Akta Kelahiran" url={pendaftar.akta} />
+                                    <DocumentItem label="Scan/Foto Ijazah/SKL" url={pendaftar.certificate} />
+                                    <DocumentItem label="Scan/Foto Foto Formal" url={pendaftar.photo} />
                                 </div>
                             </CardContent>
                         </Card>
                     </div>
-                    {/* Action */}
+
+                    {/* Tindakan Verifikasi */}
                     <div>
                         <Card className="sticky top-2">
                             <CardHeader>
                                 <CardTitle>Tindakan Verifikasi</CardTitle>
-                                <CardDescription>Tinjau dan ambil tindakan terhadap permintaan verifikasi ini</CardDescription>
+                                <CardDescription>Tambahkan catatan & update status</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <div className="space-y-4">
-                                    <div>
-                                        <FormItem>
-                                            <Label htmlFor="comment">Catatan/umpan balik</Label>
-                                            <Textarea
-                                                placeholder="Tambahkan catatan atau umpan balik..."
-                                                value={data.comment}
-                                                onChange={(e) => setData('comment', e.target.value)}
-                                                className="min-h-[120px] resize-y"
-                                            />
-                                        </FormItem>
-                                    </div>
-                                    {userData.status !== 'menunggu' && <ShowAlert status={userData.status} notes={data.comment} />}
-                                </div>
+                                <FormItem>
+                                    <Label htmlFor="comment">Catatan/Umpan Balik</Label>
+                                    <Textarea
+                                        placeholder="Tambahkan catatan atau umpan balik..."
+                                        value={data.comment}
+                                        onChange={(e) => setData('comment', e.target.value)}
+                                        className="min-h-[120px] resize-y"
+                                    />
+                                </FormItem>
                             </CardContent>
                             <CardFooter className="flex flex-col gap-2">
                                 <Button
                                     className="w-full"
                                     onClick={() => handleClick('approve')}
-                                    disabled={userData.status !== 'menunggu' || processing}
+                                    disabled={pendaftar.status !== 'Menunggu' || processing}
                                 >
-                                    <CheckCircle className="mr-2 h-4 w-4" />
-                                    Setujui Verifikasi
+                                    <CheckCircle className="mr-2 h-4 w-4" /> Setujui Verifikasi
                                 </Button>
                                 <Button
                                     variant="outline"
                                     className="w-full"
                                     onClick={() => handleClick('revision')}
-                                    disabled={userData.status !== 'menunggu' || processing}
+                                    disabled={pendaftar.status !== 'Menunggu' || processing}
                                 >
-                                    <Clock className="mr-2 h-4 w-4" />
-                                    Minta Revisi
+                                    <Clock className="mr-2 h-4 w-4" /> Minta Revisi
                                 </Button>
                                 <Button
                                     variant="destructive"
                                     className="w-full"
                                     onClick={() => handleClick('reject')}
-                                    disabled={userData.status !== 'menunggu' || processing}
+                                    disabled={pendaftar.status !== 'Menunggu' || processing}
                                 >
-                                    <AlertCircle className="mr-2 h-4 w-4" />
-                                    Tolak Verifikasi
+                                    <AlertCircle className="mr-2 h-4 w-4" /> Tolak Verifikasi
                                 </Button>
                             </CardFooter>
                         </Card>
@@ -240,44 +208,14 @@ function DataItem({ label, value }: { label: string; value: string }) {
 }
 
 function StatusChip({ status }: { status: Status }) {
-    const statusCondition: { [key: string]: ChipVariants & { text: string } } = {
-        lulus: {
-            text: 'Lulus',
-            variant: 'success',
-        },
-        menunggu: {
-            text: 'Menunggu',
-            variant: 'warning',
-        },
-        revisi: {
-            text: 'Revisi',
-            variant: 'info',
-        },
-        ditolak: {
-            text: 'Di tolak',
-            variant: 'danger',
-        },
+    const statusCondition: { [key in Status]: ChipVariants & { text: string } } = {
+        Selesai: { text: 'Selesai', variant: 'success' },
+        Menunggu: { text: 'Menunggu', variant: 'warning' },
+        Revisi: { text: 'Revisi', variant: 'info' },
+        Ditolak: { text: 'Ditolak', variant: 'danger' },
+        'Belum Lunas': { text: 'Belum Lunas', variant: 'danger' },
     };
     const currStatus = statusCondition[status];
 
     return <Chip variant={currStatus.variant}>{currStatus.text}</Chip>;
-}
-
-function ShowAlert({ status, notes }: { status: string; notes?: string }) {
-    return (
-        <Alert variant={status === 'lulus' ? 'default' : status === 'rejected' ? 'destructive' : 'warning'}>
-            <div className="flex items-center gap-2">
-                {status === 'lulus' && <CheckCircle className="h-4 w-4" />}
-                {status === 'ditolak' && <AlertCircle className="h-4 w-4" />}
-                {status === 'revisi' && <Clock className="h-4 w-4" />}
-                <AlertTitle className="capitalize">{status}</AlertTitle>
-            </div>
-            <AlertDescription className="mt-2">
-                {status === 'lulus' && 'Verifikasi ini telah disetujui.'}
-                {status === 'ditolak' && 'Verifikasi ini telah ditolak.'}
-                {status === 'revisi' && 'Revisi telah diminta.'}
-                {notes && <p className="mt-2 text-sm">{notes}</p>}
-            </AlertDescription>
-        </Alert>
-    );
 }

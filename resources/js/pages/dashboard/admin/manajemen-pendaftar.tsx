@@ -66,7 +66,6 @@ export default function ManajemenPendaftar() {
                 };
 
                 const statusData = statusMap[status] ?? { text: 'Tidak Diketahui', variant: 'danger' };
-
                 return <Chip variant={statusData.variant}>{statusData.text}</Chip>;
             },
         },
@@ -84,9 +83,42 @@ export default function ManajemenPendaftar() {
         },
     ];
 
+    const handleExport = () => {
+        const table = document.querySelector('table');
+        if (!table) {
+            alert('Tabel tidak ditemukan!');
+            return;
+        }
+
+        const rows = table.querySelectorAll('tbody tr');
+        if (!rows.length) {
+            alert('Tidak ada data yang ditampilkan!');
+            return;
+        }
+
+        let csv = 'No Pendaftaran,Nama,Program,Tanggal Daftar,Status\n';
+        rows.forEach((row) => {
+            const cells = row.querySelectorAll('td');
+            const rowData = Array.from(cells).map((cell) => (cell.textContent || '').trim().replace(/,/g, ''));
+            csv += rowData.join(',') + '\n';
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', 'rekapitulasi.csv');
+        link.click();
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Manajemen Pendaftar" />
+            <div className="flex justify-end p-4">
+                <Button variant="outline" onClick={handleExport} className="bg-green-500 text-white hover:bg-green-600">
+                    Export CSV
+                </Button>
+            </div>
             <Card>
                 <CardContent>
                     <DataTable columns={columns} data={pendaftar} />

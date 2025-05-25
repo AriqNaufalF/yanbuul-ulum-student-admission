@@ -45,11 +45,11 @@ const adminNavItems: NavItem[] = [
         href: '/manajemen-pendaftar',
         icon: UserRoundPlus,
     },
-    {
-        title: 'Rekapitulasi & Export',
-        href: '/rekapitulasi',
-        icon: FileOutput,
-    },
+    // {
+    //     title: 'Rekapitulasi & Export',
+    //     href: '/rekapitulasi',
+    //     icon: FileOutput,
+    // },
 ];
 
 export function AppSidebar() {

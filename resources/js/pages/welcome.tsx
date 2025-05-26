@@ -201,10 +201,12 @@ function AchievementSection() {
         'Juara 3 Pidato Bahasa Indonesia Tingkat Provinsi 2024',
         'Juara 2 Tahfiz 5 Juz Tingkat Provinsi 2024',
         'Juara 1 Tilawah Anak-Anak dan Remaja Tingkat Desa 2024',
-        'Juara 3 MHQ Tingkat SUMBAGTENG 2024',
         'Juara 3 Umum Perkemahan Akbar Kwaran Sabak Auh 2024',
+        'Juara 3 MHQ Tingkat SUMBAGTENG 2024',
         'Emiya Caroninta Br. Ginting Menjadi Finalis Forkab Tapak Suci Tingkat Kabupaten 2024',
     ];
+
+    const imagesSrc = ['/images/prestasi-1.jpg', '/images/prestasi-2.jpg'];
 
     return (
         <SectionWrapper id="prestasi">
@@ -224,8 +226,9 @@ function AchievementSection() {
                             <Card className="overflow-hidden p-0">
                                 <CardHeader className="p-0">
                                     <img
-                                        src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                                        src={index % 2 === 0 ? imagesSrc[0] : imagesSrc[1]}
                                         alt="Prestasi santri"
+                                        className="aspect-4/3 object-contain"
                                     />
                                 </CardHeader>
                                 <CardContent className="px-4 pb-6">

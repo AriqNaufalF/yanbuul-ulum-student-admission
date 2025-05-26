@@ -1,6 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Head, usePage } from '@inertiajs/react';
+import { Month } from 'date-fns';
+import { id } from 'date-fns/locale';
 import { Bar, BarChart, CartesianGrid, Legend, Pie, PieChart, Tooltip, XAxis, YAxis } from 'recharts';
 
 interface DashboardProps {
@@ -37,7 +39,7 @@ export default function AdminDashboard() {
     }>().props;
 
     const barChartData = pendaftarPerBulan.map((item) => ({
-        month: new Date(2025, item.month - 1).toLocaleString('default', { month: 'long' }),
+        month: id.localize.month((item.month - 1) as Month, { width: 'abbreviated' }),
         applicants: item.count,
     }));
 
@@ -53,14 +55,14 @@ export default function AdminDashboard() {
             <Head title="Dashboard" />
             <div className="@container space-y-8">
                 {/* Quick Info */}
-                <div className="grid grid-cols-1 justify-items-center gap-2 @3xl:grid-cols-2 @5xl:grid-cols-4">
-                    <Card className="w-full items-center justify-center @5xl:max-w-72">
+                <div className="grid grid-cols-1 justify-items-center gap-2 @2xl:grid-cols-2 @4xl:grid-cols-3">
+                    <Card className="w-full justify-center @4xl:max-w-80">
                         <CardContent>
                             <h2 className="mb-1 text-gray-700">Total Pendaftar</h2>
                             <p className="text-xl font-medium">{totalPendaftar}</p>
                         </CardContent>
                     </Card>
-                    <Card className="w-80 items-center justify-center @5xl:max-w-80">
+                    <Card className="w-full justify-center @4xl:max-w-80">
                         <CardContent>
                             <h2 className="mb-1 text-gray-700">Status Pendaftaran</h2>
                             <div className="flex gap-4 md:gap-6">
@@ -95,7 +97,7 @@ export default function AdminDashboard() {
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className="w-full items-center justify-center @5xl:max-w-72">
+                    <Card className="w-full justify-center @4xl:max-w-80">
                         <CardContent>
                             <h2 className="mb-1 text-gray-700">Status Pembayaran</h2>
                             <div className="flex gap-4 md:gap-6">
@@ -124,13 +126,17 @@ export default function AdminDashboard() {
                             <CardTitle className="text-center">Trend Pendaftaran</CardTitle>
                         </CardHeader>
                         <CardContent className="flex justify-center">
-                            <BarChart width={400} height={300} data={barChartData}>
-                                <CartesianGrid vertical={false} />
-                                <YAxis dataKey="applicants" tickLine={false} tickMargin={10} axisLine={false} />
-                                <XAxis dataKey="month" tickLine={false} tickMargin={10} />
-                                <Tooltip />
-                                <Bar dataKey="applicants" fill="#3b82f6" radius={8} />
-                            </BarChart>
+                            {barChartData.length === 0 ? (
+                                <p className="text-gray-500">Belum ada data pendaftaran</p>
+                            ) : (
+                                <BarChart width={400} height={300} data={barChartData}>
+                                    <CartesianGrid vertical={false} />
+                                    <YAxis dataKey="applicants" tickLine={false} tickMargin={10} axisLine={false} />
+                                    <XAxis dataKey="month" tickLine={false} tickMargin={10} />
+                                    <Tooltip />
+                                    <Bar dataKey="applicants" fill="#3b82f6" radius={8} />
+                                </BarChart>
+                            )}
                         </CardContent>
                     </Card>
 
@@ -139,11 +145,15 @@ export default function AdminDashboard() {
                             <CardTitle className="text-center">Status Pendaftaran</CardTitle>
                         </CardHeader>
                         <CardContent className="flex flex-1 justify-center pb-0">
-                            <PieChart width={400} height={300}>
-                                <Pie data={pieChartData} dataKey="applicants" nameKey="status" cx="50%" cy="50%" outerRadius={100} />
-                                <Tooltip />
-                                <Legend layout="horizontal" verticalAlign="bottom" align="center" />
-                            </PieChart>
+                            {pieChartData.reduce((acc, current) => acc + current.applicants, 0) === 0 ? (
+                                <p className="text-gray-500">Belum ada data pendaftaran</p>
+                            ) : (
+                                <PieChart width={400} height={300}>
+                                    <Pie data={pieChartData} dataKey="applicants" nameKey="status" cx="50%" cy="50%" outerRadius={100} />
+                                    <Tooltip />
+                                    <Legend layout="horizontal" verticalAlign="bottom" align="center" />
+                                </PieChart>
+                            )}
                         </CardContent>
                     </Card>
                 </div>

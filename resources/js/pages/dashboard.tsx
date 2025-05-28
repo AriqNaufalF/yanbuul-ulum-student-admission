@@ -1,23 +1,30 @@
 import { Chip } from '@/components/chip';
+import DocumentItem from '@/components/Document-item';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { format } from 'date-fns';
-import { Eye } from 'lucide-react';
+import { Eye, MessageSquareWarning } from 'lucide-react';
+import { toast } from 'sonner';
 
-type AcceptanceStatus = 'diterima' | 'diproses' | 'ditolak';
+type AcceptanceStatus = 'Belum Lunas' | 'Menunggu' | 'Revisi' | 'Ditolak' | 'Selesai';
+
 interface RegistrationData {
     id: number;
     name: string;
+    program: string;
     regisNumber: string;
     status: AcceptanceStatus;
-    date: Date;
+    comment: string;
+    date: string;
     birthPlace: string;
-    birthDate: Date;
+    birthDate: string;
     address: string;
     province: string;
     city: string;
@@ -27,7 +34,12 @@ interface RegistrationData {
     motherName: string;
     parentPhone: string;
     parentEmail: string;
+    kk: string;
+    akta: string;
+    certificate: string;
+    photo: string;
 }
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Beranda',
@@ -36,66 +48,72 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Dashboard() {
-    const registrationData = {
-        id: 1,
-        name: 'John Doe',
-        regisNumber: '123456789',
-        status: 'diproses' as AcceptanceStatus,
-        date: new Date(),
-        birthPlace: 'Jakarta',
-        birthDate: new Date('2000-01-01'),
-        address: 'Jl. Raya No. 1',
-        province: 'DKI Jakarta',
-        city: 'Jakarta',
-        postalCode: '12345',
-        nik: '1234567890123456',
-        fatherName: 'Bapak Doe',
-        motherName: 'Ibu Doe',
-        parentPhone: '08123456789',
-        parentEmail: '@example.com',
-    } as RegistrationData;
+    const { registrationData } = usePage<{ registrationData: RegistrationData | null }>().props;
+
+    console.log('registrationData:', registrationData);
+
+    const handleDocClick = (url: string) => {
+        if (!url) {
+            toast.error('Dokumen tidak tersedia!');
+            return;
+        }
+        window.open(url, '_blank');
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <Card>
                 <CardContent>
-                    <Button className="mb-4" asChild>
-                        <Link href="/dashboard/data-calon-santri">Daftar</Link>
-                    </Button>
-                    <hr />
                     <Table className="mt-4 border">
                         <TableHeader className="bg-slate-100">
                             <TableRow>
                                 <TableHead>Tanggal Daftar</TableHead>
                                 <TableHead>Nomor Pendaftaran</TableHead>
-                                <TableHead className="min-w-36">Nama</TableHead>
+                                <TableHead>Nama</TableHead>
+                                <TableHead>Program</TableHead>
                                 <TableHead>Status</TableHead>
                                 <TableHead>Detail</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            <TableRow>
-                                {registrationData?.name ? (
-                                    <>
-                                        <TableCell>{format(registrationData.date, 'dd-MM-yyyy')}</TableCell>
-                                        <TableCell>{registrationData.regisNumber}</TableCell>
-                                        <TableCell>{registrationData.name}</TableCell>
-                                        <TableCell>
-                                            <ChipStatus status={registrationData.status} />
-                                        </TableCell>
-                                        <TableCell>
-                                            <Dialog>
-                                                <DialogTrigger asChild>
-                                                    <Button variant="outline" size="icon" className="border-blue-500" type="button">
-                                                        <Eye className="text-blue-500" />
-                                                        <span className="sr-only">Detail</span>
-                                                    </Button>
-                                                </DialogTrigger>
-                                                <DialogContent>
-                                                    <DialogHeader className="border-b pb-2">
-                                                        <DialogTitle className="text-xl md:text-2xl">Riwayat Pendaftaran</DialogTitle>
-                                                    </DialogHeader>
-                                                    <div className="">
+                            {registrationData ? (
+                                <TableRow>
+                                    <TableCell>{format(new Date(registrationData.date), 'dd-MM-yyyy')}</TableCell>
+                                    <TableCell>{registrationData.regisNumber}</TableCell>
+                                    <TableCell>{registrationData.name}</TableCell>
+                                    <TableCell>{registrationData.program}</TableCell>
+                                    <TableCell>
+                                        <ChipStatus status={registrationData.status} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <Button variant="outline" size="icon" className="border-blue-500">
+                                                    <Eye className="text-blue-500" />
+                                                    <span className="sr-only">Detail</span>
+                                                </Button>
+                                            </DialogTrigger>
+                                            <DialogContent className="max-h-screen overflow-y-scroll xl:overflow-hidden">
+                                                <DialogHeader className="border-b pb-2">
+                                                    <DialogTitle className="text-xl md:text-2xl">Data Registrasi</DialogTitle>
+                                                </DialogHeader>
+
+                                                {/* ALERT KOMENTAR */}
+                                                {registrationData.comment && (
+                                                    <Alert variant="warning">
+                                                        <MessageSquareWarning />
+                                                        <AlertTitle>Status: {registrationData.status}</AlertTitle>
+                                                        <AlertDescription>{registrationData.comment}</AlertDescription>
+                                                    </Alert>
+                                                )}
+
+                                                <Tabs defaultValue="data">
+                                                    <TabsList className="grid w-full grid-cols-2">
+                                                        <TabsTrigger value="data">Data Calon Santri</TabsTrigger>
+                                                        <TabsTrigger value="document">Dokumen</TabsTrigger>
+                                                    </TabsList>
+                                                    <TabsContent value="data">
                                                         <div className="space-y-2">
                                                             <h3 className="text-lg font-medium md:text-xl">DATA PRIBADI</h3>
                                                             <p className="grid grid-cols-2 gap-4">
@@ -111,19 +129,23 @@ export default function Dashboard() {
                                                                 <span>: {registrationData.birthPlace}</span>
                                                             </p>
                                                             <p className="grid grid-cols-2 gap-4">
-                                                                <span className="font-medium">Alamat Asal</span>
-                                                                <span>: {format(registrationData.birthDate, 'dd-MM-yyyy')}</span>
+                                                                <span className="font-medium">Tanggal Lahir</span>
+                                                                <span>: {format(new Date(registrationData.birthDate), 'dd-MM-yyyy')}</span>
                                                             </p>
                                                             <p className="grid grid-cols-2 gap-4">
-                                                                <span className="font-medium">Provinsi Asal</span>
+                                                                <span className="font-medium">Alamat Asal</span>
+                                                                <span>: {registrationData.address}</span>
+                                                            </p>
+                                                            <p className="grid grid-cols-2 gap-4">
+                                                                <span className="font-medium">Provinsi</span>
                                                                 <span>: {registrationData.province}</span>
                                                             </p>
                                                             <p className="grid grid-cols-2 gap-4">
-                                                                <span className="font-medium">Kab/Kota Asal</span>
+                                                                <span className="font-medium">Kab/Kota</span>
                                                                 <span>: {registrationData.city}</span>
                                                             </p>
                                                             <p className="grid grid-cols-2 gap-4">
-                                                                <span className="font-medium">Kode Pos Asal</span>
+                                                                <span className="font-medium">Kode Pos</span>
                                                                 <span>: {registrationData.postalCode}</span>
                                                             </p>
                                                             <p className="grid grid-cols-2 gap-4">
@@ -150,24 +172,44 @@ export default function Dashboard() {
                                                                 <span>: {registrationData.parentEmail}</span>
                                                             </p>
                                                         </div>
-                                                    </div>
-                                                    <DialogFooter>
-                                                        <DialogClose asChild>
-                                                            <Button type="button" variant="outline">
-                                                                Tutup
-                                                            </Button>
-                                                        </DialogClose>
-                                                    </DialogFooter>
-                                                </DialogContent>
-                                            </Dialog>
-                                        </TableCell>
-                                    </>
-                                ) : (
-                                    <TableCell colSpan={5} className="text-center">
-                                        Anda masih belum mendaftar.
+                                                    </TabsContent>
+                                                    <TabsContent value="document">
+                                                        <div className="space-y-2">
+                                                            <DocumentItem
+                                                                label="Scan/Foto Kartu Keluarga"
+                                                                onClick={() => handleDocClick(registrationData.kk)}
+                                                            />
+                                                            <DocumentItem
+                                                                label="Scan/Foto Akta Kelahiran"
+                                                                onClick={() => handleDocClick(registrationData.akta)}
+                                                            />
+                                                            <DocumentItem
+                                                                label="Scan/Foto Ijazah/SKL"
+                                                                onClick={() => handleDocClick(registrationData.certificate)}
+                                                            />
+                                                            <DocumentItem
+                                                                label="Scan/Foto Foto Formal"
+                                                                onClick={() => handleDocClick(registrationData.photo)}
+                                                            />
+                                                        </div>
+                                                    </TabsContent>
+                                                </Tabs>
+                                                <DialogFooter>
+                                                    <DialogClose asChild>
+                                                        <Button variant="outline">Tutup</Button>
+                                                    </DialogClose>
+                                                </DialogFooter>
+                                            </DialogContent>
+                                        </Dialog>
                                     </TableCell>
-                                )}
-                            </TableRow>
+                                </TableRow>
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={5} className="text-center">
+                                        Anda belum memiliki data pendaftaran.
+                                    </TableCell>
+                                </TableRow>
+                            )}
                         </TableBody>
                     </Table>
                 </CardContent>
@@ -177,25 +219,15 @@ export default function Dashboard() {
 }
 
 function ChipStatus({ status }: { status: AcceptanceStatus }) {
-    if (status === 'diterima') {
-        return (
-            <Chip variant="success">
-                <span>Lolos</span>
-            </Chip>
-        );
-    }
+    const statusMap: { [key in AcceptanceStatus]: { text: string; variant: 'success' | 'warning' | 'info' | 'danger' } } = {
+        Selesai: { text: 'Selesai', variant: 'success' },
+        Menunggu: { text: 'Menunggu', variant: 'warning' },
+        Revisi: { text: 'Revisi', variant: 'info' },
+        Ditolak: { text: 'Ditolak', variant: 'danger' },
+        'Belum Lunas': { text: 'Belum Lunas', variant: 'danger' },
+    };
 
-    if (status === 'diproses') {
-        return (
-            <Chip variant="warning">
-                <span>Sedang Diproses</span>
-            </Chip>
-        );
-    }
+    const currStatus = statusMap[status];
 
-    return (
-        <Chip variant="danger">
-            <span>Tidak Lolos</span>
-        </Chip>
-    );
+    return <Chip variant={currStatus.variant}>{currStatus.text}</Chip>;
 }

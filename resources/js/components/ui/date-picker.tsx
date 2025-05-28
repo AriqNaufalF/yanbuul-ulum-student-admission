@@ -13,18 +13,19 @@ interface DatePickerProps {
     setDate: (date: Date) => void;
 }
 
-export function DatePicker({ startYear = getYear(new Date()) - 100, endYear = getYear(new Date()) + 100, date = new Date(), setDate }: DatePickerProps) {
+export function DatePicker({ startYear = getYear(new Date()) - 100, endYear = getYear(new Date()) + 100, date, setDate }: DatePickerProps) {
     // const [date, setDate] = useState<Date>(new Date());
     const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
     const years = Array.from({ length: endYear - startYear + 1 }, (_, i) => startYear + i);
+    const baseDate = date ?? new Date();
 
     const handleMonthChange = (month: string) => {
-        const newDate = setMonth(date, months.indexOf(month));
+        const newDate = setMonth(baseDate, months.indexOf(month));
         setDate(newDate);
     };
 
     const handleYearChange = (year: string) => {
-        const newDate = setYear(date, parseInt(year));
+        const newDate = setYear(baseDate, parseInt(year));
         setDate(newDate);
     };
 
@@ -38,7 +39,7 @@ export function DatePicker({ startYear = getYear(new Date()) - 100, endYear = ge
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
                 <div className="flex items-center justify-between p-2">
-                    <Select onValueChange={handleMonthChange} value={months[getMonth(date)]}>
+                    <Select onValueChange={handleMonthChange} value={months[getMonth(baseDate)]}>
                         <SelectTrigger className="w-28">
                             <SelectValue placeholder="Bulan" />
                         </SelectTrigger>
@@ -50,7 +51,7 @@ export function DatePicker({ startYear = getYear(new Date()) - 100, endYear = ge
                             ))}
                         </SelectContent>
                     </Select>
-                    <Select onValueChange={handleYearChange} value={getYear(date).toString()}>
+                    <Select onValueChange={handleYearChange} value={getYear(baseDate).toString()}>
                         <SelectTrigger className="w-28">
                             <SelectValue placeholder="Tahun" />
                         </SelectTrigger>

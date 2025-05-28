@@ -5,10 +5,11 @@ import { FormItem, FormTitle } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { BreadcrumbItem, SharedData } from '@/types';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler } from 'react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -18,20 +19,50 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 interface FileUploadForm {
+    userId: number;
     kartuKeluarga: File | null;
     aktaLahir: File | null;
     ijazah: File | null;
     fotoFormal: File | null;
-    ktp: File | null;
-    suratPernyataan: File | null;
 }
 export default function Berkas() {
-    const { data, setData, processing, errors } = useForm<Required<FileUploadForm>>();
+    const { auth } = usePage<SharedData>().props;
+    const { data, setData, processing, errors } = useForm<Required<FileUploadForm>>({
+        userId: auth.user.id,
+        kartuKeluarga: null,
+        aktaLahir: null,
+        ijazah: null,
+        fotoFormal: null,
+    });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        // Handle form submission
-        console.log(data);
+        const formData = new FormData();
+        formData.append('kartu_keluarga', data.kartuKeluarga as File);
+        formData.append('akta_lahir', data.aktaLahir as File);
+        formData.append('ijazah', data.ijazah as File);
+        formData.append('foto_formal', data.fotoFormal as File);
+
+        router.post(route('berkas.store'), formData, {
+            forceFormData: true,
+            onSuccess: () => {
+                toast.success('Berkas berhasil diunggah!');
+                setData({
+                    userId: auth.user.id,
+                    kartuKeluarga: null,
+                    aktaLahir: null,
+                    ijazah: null,
+                    fotoFormal: null,
+                });
+            },
+            onError: (errors) => {
+                if (errors.general) {
+                    toast.error(errors.general);
+                } else {
+                    toast.error('Gagal mengunggah berkas. Periksa data Anda.');
+                }
+            },
+        });
     };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -43,8 +74,8 @@ export default function Berkas() {
                             <div>
                                 <FormTitle>PEMBERKASAN</FormTitle>
                                 <p className="text-muted-foreground">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis minus iusto, illo quisquam optio hic sint
-                                    expedita facilis, ducimus et ad adipisci dolorem provident, nemo quibusdam fugit quaerat obcaecati consectetur.
+                                    Silakan unggah berkas-berkas yang diperlukan untuk pendaftaran. Pastikan semua berkas yang diunggah dalam format
+                                    PDF atau JPG dan tidak lebih dari 2MB per file.
                                 </p>
                             </div>
                             <div className="space-y-4">
@@ -91,34 +122,10 @@ export default function Berkas() {
                                         type="file"
                                         required
                                         multiple={false}
-                                        accept="application/pdf, image/jpeg"
+                                        accept="image/jpeg, image/png"
                                         onChange={(e) => setData('fotoFormal', e.target.files?.[0] || null)}
                                     />
                                     <InputError message={errors.fotoFormal} />
-                                </FormItem>
-                                <FormItem>
-                                    <Label htmlFor="ktp">Scan/Foto KTP Orang Tua (PDF/JPG)</Label>
-                                    <Input
-                                        id="ktp"
-                                        type="file"
-                                        required
-                                        multiple={false}
-                                        accept="application/pdf, image/jpeg"
-                                        onChange={(e) => setData('ktp', e.target.files?.[0] || null)}
-                                    />
-                                    <InputError message={errors.ktp} />
-                                </FormItem>
-                                <FormItem>
-                                    <Label htmlFor="surat-pernyataan">Surat Pernyataan (PDF)</Label>
-                                    <Input
-                                        id="surat-pernyataan"
-                                        type="file"
-                                        required
-                                        multiple={false}
-                                        accept="application/pdf"
-                                        onChange={(e) => setData('suratPernyataan', e.target.files?.[0] || null)}
-                                    />
-                                    <InputError message={errors.suratPernyataan} />
                                 </FormItem>
                             </div>
                         </div>

@@ -4,6 +4,12 @@ use App\Http\Controllers\WilayahController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use App\Http\Controllers\SantriController;
+use App\Http\Controllers\BerkasController;
+use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ManagementController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -19,34 +25,35 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('api/provinces/{provinceId}/cities', 'getCities')->name('cities');
     });
 
-    Route::get('dashboard', function (Request $request) {
-        // Check if the user is an admin
-        // Replace this query param isAdmin with actual admin check logic
-        $isAdmin = $request->query('isAdmin', false);
-        if ($isAdmin == 'true') {
-            return Inertia::render('admin-dashboard');
-        }
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::controller(SantriController::class)->group(function () {
+        Route::get('/data-calon-santri', 'create')->name('santri.create');
+        Route::post('/data-calon-santri', 'store')->name('santri.store');
+    });
 
-    Route::get('berkas', function () {
-        return Inertia::render('dashboard/berkas',);
-    })->name('berkas');
+    Route::controller(BerkasController::class)->group(function () {
+        Route::get('berkas', 'index')->name('berkas.index');
+        Route::post('berkas', 'store')->name('berkas.store');
+    });
 
-    Route::get('pembayaran', function () {
-        return Inertia::render('dashboard/pembayaran');
-    })->name('pembayaran');
+    Route::controller(ProgramController::class)->group(function () {
+        Route::get('/daftar', 'index')->name('program.index');
+        Route::post('/daftar-program', 'store')->name('program.store');
+    });
 
-    Route::get('pembayaran/bayar', function () {
-        return Inertia::render('dashboard/detail-pembayaran');
-    })->name('detail-pembayaran');
+    Route::controller(PembayaranController::class)->prefix('pembayaran')->group(function () {
+        Route::get('/', 'index')->name('pembayaran');
+        Route::get('/bayar', 'show')->name('pembayaran.detail');
+        Route::patch('/{pembayaran}/update-method', 'update')->name('pembayaran.update-method');
+        Route::patch('/{pembayaran}/pay', 'pay')->name('pembayaran.pay');
+    });
 
-    Route::get('dashboard/data-calon-santri', function () {
-        return Inertia::render('dashboard/data-calon-santri');
-    })->name('data-calon-santri');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('dashboard/data-calon-santri/pendidikan', function () {
-        return Inertia::render('dashboard/pendidikan');
+    // Admin Routes
+    Route::prefix('manajemen-pendaftar')->controller(ManagementController::class)->group(function () {
+        Route::get('/', 'index')->name('manajemen-pendaftar.index');
+        Route::get('/{id}', 'show')->name('manajemen-pendaftar.show');
+        Route::patch('/{id}', 'update')->name('manajemen-pendaftar.update');
     });
 });
 

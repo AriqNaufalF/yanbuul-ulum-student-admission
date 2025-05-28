@@ -8,74 +8,90 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { City, getCities, getProvinces, Province } from '@/lib/wilayah-api';
-import { BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
+import { BreadcrumbItem, SharedData } from '@/types';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { getYear } from 'date-fns';
 import { LoaderCircle } from 'lucide-react';
 import { FormEventHandler, useEffect, useMemo, useState } from 'react';
+import { toast } from 'sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Beranda',
-        href: '/dashboard',
-    },
-    {
         title: 'Data Calon Santri',
-        href: '/dashboard/data-calon-santri',
+        href: '/data-calon-santri',
     },
 ];
 
-interface ProspectiveStudent {
+type ProspectiveStudent = {
+    userId: number;
     name: string;
     nik: string;
-    birthDate: Date;
+    birthDate?: Date;
     birthPlace: string;
     gender: string;
     address: string;
     province: string;
     city: string;
     postalCode: string;
-}
+};
 
-interface ParentData {
+type ParentData = {
     phone: string;
     email: string;
     fathersName: string;
     fathersJob: string;
     mothersName: string;
     mothersJob: string;
-}
+};
 
-export default function DataCalonSantri() {
+type RiwayatPendidikan = {
+    schoolOrigin: string;
+    graduationYear: string;
+};
+
+export default function DataCalonSantri({ dataCalonSantri }: { dataCalonSantri: ProspectiveStudent & ParentData & RiwayatPendidikan }) {
+    const { auth } = usePage<SharedData>().props;
     const [provinces, setProvinces] = useState<Province[]>([]);
     const [cities, setCities] = useState<City[]>([]);
     const [selectedProvince, setSelectedProvince] = useState<string>('');
+    const [selectedCity, setSelectedCity] = useState<string>('');
     const [loadingProvinces, setLoadingProvinces] = useState<boolean>(false);
     const [loadingCities, setLoadingCities] = useState<boolean>(false);
 
-    const { data, setData, processing, errors } = useForm<Required<ProspectiveStudent & ParentData>>({
-        name: '',
-        nik: '',
-        gender: '',
-        birthPlace: '',
-        birthDate: new Date(),
-        address: '',
-        province: '',
-        city: '',
-        postalCode: '',
-        phone: '',
-        email: '',
-        fathersName: '',
-        fathersJob: '',
-        mothersName: '',
-        mothersJob: '',
+    const { data, setData, processing, errors, post } = useForm<ProspectiveStudent & ParentData & RiwayatPendidikan>({
+        userId: auth.user.id,
+        name: dataCalonSantri.name ?? '',
+        nik: dataCalonSantri.nik ?? '',
+        gender: dataCalonSantri.gender ?? '',
+        birthPlace: dataCalonSantri.birthPlace ?? '',
+        birthDate: dataCalonSantri.birthDate ? new Date(dataCalonSantri.birthDate) : undefined,
+        address: dataCalonSantri.address ?? '',
+        province: dataCalonSantri.province ?? '',
+        city: dataCalonSantri.city ?? '',
+        postalCode: dataCalonSantri.postalCode ?? '',
+        phone: dataCalonSantri.phone ?? '',
+        email: dataCalonSantri.email ?? '',
+        fathersName: dataCalonSantri.fathersName ?? '',
+        fathersJob: dataCalonSantri.fathersJob ?? '',
+        mothersName: dataCalonSantri.mothersName ?? '',
+        mothersJob: dataCalonSantri.mothersJob ?? '',
+        schoolOrigin: dataCalonSantri.schoolOrigin ?? '',
+        graduationYear: dataCalonSantri.graduationYear ?? '',
     });
 
     // Fetch provinces on component mount
     useEffect(() => {
         setLoadingProvinces(true);
         getProvinces()
-            .then(setProvinces)
+            .then((data) => {
+                setProvinces(data);
+                if (dataCalonSantri.province) {
+                    const selectedProv = data.find(({ name }) => name === dataCalonSantri.province);
+                    if (selectedProv) {
+                        setSelectedProvince(selectedProv.id);
+                    }
+                }
+            })
             .catch((error: Error) => {
                 console.error(error.message);
             })
@@ -87,18 +103,37 @@ export default function DataCalonSantri() {
         if (selectedProvince !== '') {
             setLoadingCities(true);
             getCities(selectedProvince)
-                .then(setCities)
+                .then((data) => {
+                    setCities(data);
+                    if (dataCalonSantri.city) {
+                        const selectedCity = data.find(({ name }) => name === dataCalonSantri.city);
+                        if (selectedCity) {
+                            setSelectedCity(selectedCity.id);
+                        }
+                    }
+                })
                 .catch((error: Error) => {
                     console.error(error.message);
                 })
                 .finally(() => setLoadingCities(false));
-
-            setData('province', provinces.find(({ id }) => id === selectedProvince)!.name);
-            setData('city', '');
         }
     }, [selectedProvince]);
 
     const handleProvinceChange = (val: string) => {
+        if (!val) return;
+
+        setSelectedProvince(val);
+        const selectedProv = provinces.find(({ id }) => id === val);
+        if (selectedProv) {
+            setData('province', selectedProv.name);
+            setData('city', ''); // Reset city when province changes
+        }
+    };
+
+    const handleCityChange = (val: string) => {
+        if (!val) return;
+
+        setSelectedCity(val);
         const selectedCity = cities.find(({ id }) => id === val);
         if (selectedCity) {
             setData('city', selectedCity.name);
@@ -127,8 +162,11 @@ export default function DataCalonSantri() {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        // Handle form submission
-        console.log(data);
+        post('/data-calon-santri', {
+            onSuccess: () => {
+                toast.success('Data berhasil disimpan!');
+            },
+        });
     };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -136,12 +174,13 @@ export default function DataCalonSantri() {
             <Card>
                 <CardContent className="@container">
                     <form onSubmit={submit}>
+                        {/* Data Pribadi */}
                         <div className="grid grid-cols-1 gap-6 @3xl:grid-cols-2 @5xl:gap-8">
                             <div>
                                 <FormTitle>DATA PRIBADI</FormTitle>
                                 <p className="text-muted-foreground">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus aperiam laboriosam quia. Ea inventore totam
-                                    voluptas voluptatem ad facere quibusdam in sit aut tempora et saepe adipisci, magnam laborum. Dolorum.
+                                    Silakan isi data diri calon santri dengan lengkap dan benar. Pastikan semua data yang diisi sesuai dengan dokumen
+                                    resmi.
                                 </p>
                             </div>
                             <div className="space-y-4">
@@ -193,8 +232,8 @@ export default function DataCalonSantri() {
                                             <SelectValue placeholder="Pilih jenis kelamin" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="male">Laki-Laki</SelectItem>
-                                            <SelectItem value="female">Perempuan</SelectItem>
+                                            <SelectItem value="L">Laki-Laki</SelectItem>
+                                            <SelectItem value="P">Perempuan</SelectItem>
                                         </SelectContent>
                                     </Select>
                                     <InputError message={errors.gender} />
@@ -213,7 +252,7 @@ export default function DataCalonSantri() {
                                 </FormItem>
                                 <FormItem>
                                     <Label htmlFor="province">Provinsi Asal</Label>
-                                    <Select onValueChange={setSelectedProvince} defaultValue={data.province}>
+                                    <Select onValueChange={handleProvinceChange} value={selectedProvince || ''}>
                                         <SelectTrigger className="w-full">
                                             <SelectValue placeholder="Pilih Provinsi asal" />
                                         </SelectTrigger>
@@ -231,7 +270,7 @@ export default function DataCalonSantri() {
                                 </FormItem>
                                 <FormItem>
                                     <Label htmlFor="city">Kab/kota Asal</Label>
-                                    <Select onValueChange={handleProvinceChange} defaultValue={data.city}>
+                                    <Select onValueChange={handleCityChange} value={selectedCity || ''}>
                                         <SelectTrigger className="w-full">
                                             <SelectValue placeholder="Pilih Kab/Kota asal" />
                                         </SelectTrigger>
@@ -261,12 +300,53 @@ export default function DataCalonSantri() {
                             </div>
                         </div>
                         <hr className="my-8" />
+
+                        {/* Data riwayat pendidikan */}
+                        <div className="grid grid-cols-1 gap-6 @3xl:grid-cols-2 @5xl:gap-8">
+                            <div>
+                                <FormTitle>RIWAYAT PENDIDIKAN</FormTitle>
+                                <p className="text-muted-foreground">Silakan isi data riwayat pendidikan terakhir calon santri.</p>
+                            </div>
+                            <div className="space-y-4">
+                                <FormItem>
+                                    <Label htmlFor="school-origin">Nama Sekolah Asal</Label>
+                                    <Input
+                                        id="school-origin"
+                                        type="text"
+                                        required
+                                        value={data.schoolOrigin}
+                                        onChange={(e) => setData('schoolOrigin', e.target.value)}
+                                    />
+                                    <InputError message={errors.schoolOrigin} />
+                                </FormItem>
+                                <FormItem>
+                                    <Label htmlFor="graduation-year">Tahun Lulus</Label>
+                                    <Select onValueChange={(value) => setData('graduationYear', value)} defaultValue={data.graduationYear}>
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Pilih Tahun Lulus" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {Array.from({ length: 30 }, (_, i) => {
+                                                const year = new Date().getFullYear() - i;
+                                                return (
+                                                    <SelectItem key={year} value={String(year)}>
+                                                        {year}
+                                                    </SelectItem>
+                                                );
+                                            })}
+                                        </SelectContent>
+                                    </Select>
+                                    <InputError message={errors.graduationYear} />
+                                </FormItem>
+                            </div>
+                        </div>
+                        <hr className="my-8" />
+                        {/* Data Orang tua */}
                         <div className="grid grid-cols-1 gap-6 @3xl:grid-cols-2 @5xl:gap-8">
                             <div>
                                 <FormTitle>DATA ORANG TUA/WALI</FormTitle>
                                 <p className="text-muted-foreground">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus aperiam laboriosam quia. Ea inventore totam
-                                    voluptas voluptatem ad facere quibusdam in sit aut tempora et saepe adipisci, magnam laborum. Dolorum.
+                                    Silakan isi data orang tua/wali calon santri. Pastikan semua data yang diisi sesuai dengan dokumen resmi.
                                 </p>
                             </div>
                             <div className="space-y-4">
